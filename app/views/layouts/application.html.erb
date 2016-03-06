@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title><%= "#{@title} - " if @title %>grb</title>
+  <link href='https://fonts.googleapis.com/css?family=Roboto:400,700,900' rel='stylesheet' type='text/css'>
+  <%= stylesheet_link_tag    'application', media: 'all' %>
+
+  <script src="https://js.pusher.com/3.0/pusher.min.js"></script>
+  <%= javascript_include_tag 'application' %>
+
+  <script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+
+  <!-- Compiled and minified CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.5/css/materialize.min.css">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+  <!-- Compiled and minified JavaScript -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.5/js/materialize.min.js"></script>
+
+  <%= csrf_meta_tags %>
+</head>
+<body>
+
+  <nav id="header">
+    <ul class="hide-on-med-and-down right">    
+      
+      <!-- Dropdown Trigger -->
+      <li class="dropdown-trigger">
+        <a class="dropdown-button cover" data-activates="milestone-dropdown" data-constrainwidth="false" data-beloworigin="true">
+          <%= @title %> <i class="material-icons right">arrow_drop_down</i>
+        </a>
+      </li>
+    
+      <!-- Dropdown Structure -->
+      <ul id="milestone-dropdown" class="dropdown-content">
+        <li><a href="/~bkoski">Your Issues</a></li>
+        <li class="divider"></li>
+
+        <li><a href="/">All Milestones</a></li>
+        <li class="divider"></li>
+
+
+        <% Milestone.active.each do |m| %>
+          <li><%= link_to m.title, show_milestone_path(m.title) %></li>
+        <% end %>
+
+      </ul>
+
+
+    </ul>
+  </nav>
+  <div class="container">
+    <%= yield %>
+  </div>
+</body>
+
+<style>
+<% Contributor.all.each do |c| %>
+  .avatar.contributor-<%= c.login %> { background-image: url(<%= c.avatar_url %>); }
+<% end %>
+</style>
+
+</html>

@@ -1,0 +1,78 @@
+<div class="grouping">
+  <h3>In Progress</h3>
+  <div id="in-progress-issues" class="issues"></div>
+</div>
+
+<div class="grouping">
+  <h3>High Priority</h3>
+  <div id="priority-issues" class="issues"></div>
+</div>
+
+<% if @active_milestones.present? %>
+  <div class="grouping">
+    <h3>TODO</h3>
+
+    <% @active_milestones.each do |milestone| %>
+      <h5><%= link_to milestone, show_milestone_path(milestone) %></h5>
+      <div id="milestone-issues-<%= milestone %>" class="issues"></div>
+    <% end %>
+  </div>
+<% end %>
+
+<div class="grouping">
+  <h3>Backlog</h3>
+  <div id="backlog-issues" class="issues"></div>
+</div>
+
+<script>
+ window.issuesCollection       = new IssuesCollection(<%= Issue.all.map(&:to_broadcast_h).to_json.html_safe %>);
+ issuesCollection.masterFilter = function(issue) { return issue.assignee == <%= params[:login].to_json.html_safe %>; }
+
+ issuesCollection.registerRenderer({
+  filter: function(issue) { return issue.in_progress == true },
+  target_el: '#in-progress-issues',
+  template_name: 'issue',
+  template_opts: {
+    actions: ['pause','complete']
+  }
+ });
+
+ issuesCollection.registerRenderer({
+  filter: function(issue) { return issue.in_progress == false && issue.priority == true },
+  target_el: '#priority-issues',
+  template_name: 'issue',
+  template_opts: {
+    actions: ['start']
+  }
+ });
+
+ <% @active_milestones.each do |milestone| %>
+  issuesCollection.registerRenderer({
+    filter: function(issue) { return issue.in_progress == false && issue.priority == false && issue.milestone == <%= milestone.to_json.html_safe %> },
+    target_el: '#milestone-issues-<%= milestone %>',
+    template_name: 'issue',
+    template_opts: {
+      actions: ['start']
+    }
+   }); 
+ <% end %> 
+
+ issuesCollection.registerRenderer({
+  filter: function(issue) { return issue.in_progress == false && issue.priority == false && !_.contains(<%= @active_milestones.to_json.html_safe %>, issue.milestone); },
+  target_el: '#backlog-issues',
+  template_name: 'issue',
+  template_opts: {
+    actions: ['start']
+  }
+ });
+
+
+ issuesCollection.triggerUpdate();
+</script>
+
+
+<style>
+<% Contributor.all.each do |c| %>
+  .avatar.contributor-<%= c.login %> { background-image: url(<%= c.avatar_url %>); }
+<% end %>
+</style>

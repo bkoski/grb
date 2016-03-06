@@ -1,0 +1,45 @@
+<% if @milestones.active.present? %>
+  <div class="grouping">
+    <h3>Active</h3>
+
+    <div class="milestones">
+      <% @milestones.active.each do |milestone| %>
+        <div class="milestone" data-object-id="<%= milestone._id %>" data-entity-type="milestone">
+          <div class="content">
+            <div class="title"><%= link_to milestone.title, "/milestones/#{milestone.title}" %></div>
+          </div>
+          <div class="actions">
+            <span class="primary-actions">
+              <i class="action material-icons waves-effect waves-red" data-status="inactive">pause</i>
+              <i class="action material-icons waves-effect waves-green" data-status="closed">stop</i>
+            </span>
+          </div>
+          <div style="clear: both;"></div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+<% end %>
+
+
+<% if @milestones.inactive.present? %>
+  <div class="grouping">
+    <h3>Backlog</h3>
+
+    <div class="milestones">
+      <% @milestones.inactive.each do |milestone| %>
+        <div class="milestone" data-object-id="<%= milestone._id %>" data-entity-type="milestone">
+          <div class="content">
+            <div class="title"><%= link_to milestone.title, "/milestones/#{milestone.title}" %></div>
+          </div>
+          <div class="actions">
+            <span class="primary-actions">
+              <i class="action material-icons waves-effect waves-green" data-status="active">play_arrow</i>
+            </span>
+          </div>
+          <div style="clear: both;"></div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+<% end %>

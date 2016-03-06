@@ -1,0 +1,96 @@
+
+<!--
+
+<h2>Completed</h2>
+
+3 issues
+57 commits
+X deploys
+-->
+
+<div class="grouping">
+  <h3>In Progress</h3>
+  <div id="in-progress-issues" class="issues"></div>
+</div>
+
+<div class="grouping">
+  <h3>Priority</h3>
+  <div id="priority-issues" class="issues"></div>
+</div>
+
+<div class="grouping">
+  <h3>TODO</h3>
+  <div id="todo-list" class="issues"></div>
+</div>
+
+
+<script>
+ window.issuesCollection       = new IssuesCollection(<%= @issues.map(&:to_broadcast_h).to_json.html_safe %>);
+ issuesCollection.masterFilter = function(issue) { console.log(issue.state, issue.milestone); return issue.state == 'open' && issue.milestone == <%= params[:title].to_json.html_safe %>; }
+
+ issuesCollection.registerRenderer({
+  filter: function(issue) { return issue.in_progress == true },
+  target_el: '#in-progress-issues',
+  template_name: 'issue',
+  template_opts: {
+    actions: ['pause','complete','avatar-reassign']
+  }
+ });
+
+ issuesCollection.registerRenderer({
+  filter: function(issue) { return issue.in_progress == false && issue.priority == true },
+  target_el: '#priority-issues',
+  template_name: 'issue',
+  template_opts: {
+    actions: ['start','avatar-reassign']
+  }
+ });
+
+ issuesCollection.registerRenderer({
+  filter: function(issue) { return issue.in_progress == false && issue.priority == false },
+  target_el: '#todo-list',
+  template_name: 'issue',
+  template_opts: {
+    actions: ['start','avatar-reassign']
+  }
+ });
+
+
+ issuesCollection.triggerUpdate();
+
+$(document).on('click', '.reassign-modal-trigger', function() {
+  $('#reassign-modal').openModal()
+});
+
+  $('.modal-trigger').leanModal({
+      dismissible: true, // Modal can be dismissed by clicking outside of the modal
+      opacity: .5, // Opacity of modal background
+      in_duration: 300, // Transition in duration
+      out_duration: 200, // Transition out duration
+      ready: function() { alert('Ready'); }, // Callback for Modal open
+      complete: function() { alert('Closed'); } // Callback for Modal close
+    }
+  );
+      
+
+
+
+</script>
+
+
+
+
+<div id="reassign-modal" class="modal">
+  <div class="modal-content">
+    <h4>Reassign Issue</h4>
+    <div class="collection">
+      <% Contributor.all.each do |c| %>
+        <a class="collection-item contributor-<%= c.login %>">
+          <!-- <span class="avatar contributor-<%= c.login %>" style="display: inline-block;"></span> -->
+          <span class="title"><%= c.login %></span>
+        </a>
+      <% end %>
+    </div>
+
+  </div>
+</div>

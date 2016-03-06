@@ -1,0 +1,22 @@
+<div class="issue" data-object-id="<%= _id %>" data-entity-type="issue">
+  <div class="content">
+    <div class="repo"><%= repo_name %></div>
+    <div class="title"><a href="<%= url %>" target="_blank"><%= title %></a></div>
+  </div>
+  <div class="actions">
+    <span class="secondary-actions">
+      <% if(_.contains(opts.actions, 'reassign')) { %><i class="material-icons waves-effect tooltipped" data-position="top" data-delay="10" data-tooltip="Reassign">people</i><% } %>
+      <i class="material-icons waves-effect waves-pink tooltipped action <% if(priority) { %>is-priority <% } %>" data-status="<% if(priority) { %>normal_priority<% } else { %>priority<% } %>" data-position="top" data-delay="10" data-tooltip="Priority">error</i>
+    </span>          
+    <span class="primary-actions">
+      <% if(_.contains(opts.actions, 'pause')) { %><i class="material-icons waves-effect waves-red action" data-status="inactive">pause</i><% } %>
+      <% if(_.contains(opts.actions, 'complete')) { %><i class="material-icons waves-effect waves-green action" data-status="closed">done</i><% } %>
+      <% if(_.contains(opts.actions, 'start')) { %><i class="material-icons waves-effect waves-green action" data-status="active">play_arrow</i><% } %>
+      <% if(_.contains(opts.actions, 'avatar-reassign')) { %>
+        <div class="avatar contributor-<%= assignee %> reassign-modal-trigger"></div>
+      <% } %>
+
+    </span>
+  </div>
+  <div style="clear: both;"></div>
+</div>

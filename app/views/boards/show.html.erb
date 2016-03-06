@@ -1,0 +1,32 @@
+<div class="grouping-container" style="width: <%= @milestones.length * 580 %>px;">
+  <% @milestones.each do |milestone| %>
+    <div class="grouping">
+      <h3><%= milestone %></h3>
+
+      <div class="issues">
+        <% @issues_by_milestone[milestone].each do |issue| %>
+          <div class="issue">
+            <h6><%= issue[:title] %></h6>
+            <div class="assignment contributor-<%= issue.assignee %> avatar"></div>
+            <div style="clear: both;"></div>
+          </div>
+        <% end %>
+      </div>
+
+    </div>
+  <% end %>
+</div>
+
+<div class="assignment-modal">
+  <h4>Assign to</h4>
+
+  <div class="main-contributors">
+    <% @contributors.each do |c| %>
+      <div class="contributor">
+        <div class="avatar contributor-<%= c.login %>"></div>
+        <div class="name"><%= c.login %></div>
+      </div>
+    <% end %>
+  </div>
+
+</div>

@@ -1,0 +1,138 @@
+// Place all the styles related to the Boards controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+
+
+.grouping {
+  max-width: 800px;
+  margin: 0 auto;
+
+  h3 {
+    font-weight: 600;
+    font-size: 28px;
+    webkit-font-smoothing: antialias;
+    margin-top: 70px;
+  }
+
+  &:first-of-type h3 {
+    margin-top: 20px;;
+  }
+
+  h5 {
+    margin-top: 40px;
+    font-size: 24px;
+  }
+}
+
+.grouping.floated {
+  width: 500px;
+  float: left;
+  margin-right: 20px;
+  padding: 10px 20px;
+}
+
+.milestones, .issues {
+  min-height: 40px;
+}
+
+.assignment-modal {
+  position: absolute;
+  top: 20%;
+  left: 20%;
+  max-width: 600px;
+  background-color: #333;
+  padding: 40px;
+
+  .main-contributors {
+    .contributor {
+      float: left;
+      &:hover { cursor: pointer; }
+
+      .avatar { 
+        height: 90px;
+        width: 90px;
+      }
+    }
+    .name { display: none; }
+  }
+}
+
+.milestone, .issue {
+  border: 1px solid #EFEFEF;
+  margin-bottom: -1px;
+  background: #FFF;
+  padding: 20px;
+  position: relative;
+
+  &:hover { cursor: -webkit-grab; cursor:-moz-grab; }
+  &:active { cursor: -webkit-grabbing; cursor:-moz-grabbing; }
+
+  .content {
+    color: #111;
+    float: left;
+    position: absolute;
+
+    h6 {
+      margin: 0;
+      font-size: 18px;
+      width: 80%;
+      float: left;
+    }
+
+    .repo, .title {
+      float: left;
+    }
+
+    .repo{
+      font-weight: bold;
+      margin-right: 15px;
+      color: #AAA;
+      font-size: 12px;
+      padding-top: 3px;
+    }
+
+    .title {
+      a { color: #111; }
+      a:hover { text-decoration: underline; }
+      font-size: 18px;
+    }
+  }
+
+  .actions {
+    width: 20%;
+    float: right;
+    text-align: right;
+
+    i {
+      color: #AAA;
+      background-color: transparent !important;
+      &:hover { color: #111; cursor: pointer; }
+      &.waves-green:hover { color: #4CAF50; }
+      &.waves-red:hover { color: #f44336; }
+    }
+
+    .avatar {
+      display: inline-block;
+      margin-left: 10px;
+      &:hover { color: #111; cursor: pointer; }
+    }
+
+    .secondary-actions {
+      i {
+        opacity: 0;
+        -webkit-transition: opacity 0.1s ease-in;
+      }
+
+      i.is-priority {
+        opacity: 1;
+        color: #e53935;
+      }
+    }
+
+    &:hover {
+      .secondary-actions i {
+        opacity: 1;
+      }
+    }
+  }
+}
