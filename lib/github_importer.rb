@@ -37,7 +37,7 @@ class GithubImporter
 
     puts "Importing repo list..."
 
-    all_repos = Github.repos.list org: 'newsdev', auto_pagination: true
+    all_repos = Github.repos.list org: ENV['DEFAULT_GITHUB_ORG'], auto_pagination: true
     all_repos.each do |repo_data|
       local_repo = Repo.find_or_create_by(name: repo_data.name)
 
@@ -48,9 +48,9 @@ class GithubImporter
 
       if import_everything? || local_repo.last_activity_at >= 24.hours.ago
         puts "\timporting branches for #{repo_data.name}..."
-        active_branches = Github.repos.branches('newsdev', repo_data.name).map(&:name)
+        active_branches = Github.repos.branches(ENV['DEFAULT_GITHUB_ORG'], repo_data.name).map(&:name)
         local_repo.active_branches = active_branches.select do |branch_name|
-          branch_meta = Github.repos.branch('newsdev', repo_data.name, branch_name)
+          branch_meta = Github.repos.branch(ENV['DEFAULT_GITHUB_ORG'], repo_data.name, branch_name)
           last_touched = Date.parse(branch_meta.commit.commit.author.date)
           import_everything? || last_touched >= 1.week.ago
         end
@@ -70,7 +70,7 @@ class GithubImporter
 
       repo.active_branches.each do |branch_name|
         puts "\ton #{branch_name} branch..."
-        all_commits = Github.repos.commits.list 'newsdev', repo.name, since: 24.hours.ago, sha: branch_name
+        all_commits = Github.repos.commits.list ENV['DEFAULT_GITHUB_ORG'], repo.name, since: 24.hours.ago, sha: branch_name
 
         all_commits.each do |commit_data|
           c = repo.commits.find_or_create_by(sha: commit_data.sha)
@@ -90,11 +90,11 @@ class GithubImporter
   end
 
   def import_issues
-    [OpenStruct.new(name: 'attribute')].each do |repo|
+    [OpenStruct.new(name: ENV['DEFAULT_GITHUB_REPO'])].each do |repo|
       puts "Importing issues for #{repo.name}..."
 
       list_query = {
-        user: 'newsdev',
+        user: ENV['DEFAULT_GITHUB_ORG'],
         repo: repo.name,
         state: 'all',
         auto_pagination: true
@@ -134,7 +134,7 @@ class GithubImporter
 
         if issue_data.closed_at.present?
           i.closed_at = DateTime.parse(issue_data.closed_at)
-          i.closed_by = Github.issues.get('newsdev', repo.name, issue_data.number).try(:closed_by).try(:login) if i.closed_by.blank?
+          i.closed_by = Github.issues.get(ENV['DEFAULT_GITHUB_ORG'], repo.name, issue_data.number).try(:closed_by).try(:login) if i.closed_by.blank?
 
           # repo.update_attributes!(last_activity_at: i.closed_at) if i.closed_at > repo.last_activity_at
         else
