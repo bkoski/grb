@@ -18,7 +18,8 @@ class BoardsController < ApplicationController
   end
 
   def milestone
-    @title            = params[:name]
+    @title            = params[:title]
+    @milestone        = Milestone.find_by(title: params[:title])
     @issues           = Issue.where(milestone: params[:title], state: 'open').all
   end
 
