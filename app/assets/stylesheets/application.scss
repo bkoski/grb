@@ -62,3 +62,24 @@
   background-position: center;
   background-repeat: no-repeat;
 }
+
+.item-select { 
+
+  label {
+    font-size: 16px;
+    padding: 5px 10px;
+    border-radius: 8px;
+
+    &:hover {
+      cursor: pointer;
+      background-color: #EEE;
+    }
+  }
+
+  label.active {
+    background-color: #CCC;
+    color: black;
+  }
+
+
+}

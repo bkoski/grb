@@ -17,3 +17,12 @@
 $(document).ready(function() {
   $(".button-collapse").sideNav();
 });
+
+$(document).on('click', '.item-select label', function(e) {
+  var select = $(e.currentTarget).closest('.item-select');
+  
+  select.find('label').removeClass('active');
+  select.find('input[type="hidden"]').val($(e.currentTarget).html());
+  $(e.currentTarget).addClass('active');
+
+});
