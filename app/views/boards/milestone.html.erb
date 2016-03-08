@@ -59,7 +59,7 @@ X deploys
  issuesCollection.triggerUpdate();
 
 $(document).on('click', '.add-issue-trigger', function() {
-  $('#add-issue-modal').openModal()
+  $('#add-issue-modal').openModal({ starting_top: '1%' });
   $('#add-issue-modal input').focus();
 });
 
@@ -69,7 +69,8 @@ $(document).on('click', '.add-issue-trigger', function() {
       in_duration: 300, // Transition in duration
       out_duration: 200, // Transition out duration
       ready: function() { alert('Ready'); }, // Callback for Modal open
-      complete: function() { alert('Closed'); } // Callback for Modal close
+      complete: function() { alert('Closed'); }, // Callback for Modal close
+      starting_top: '1%'
     }
   );
       
@@ -83,7 +84,7 @@ $(document).on('click', '.add-issue-trigger', function() {
 
 <div id="add-issue-modal" class="modal">
   <div class="modal-content">
-    <h4>New Issue - <%= params[:title] %></h4>
+    <h5>New Issue - <%= params[:title] %></h5>
     <div class="row">
       <form class="col s12">
         
@@ -104,10 +105,27 @@ $(document).on('click', '.add-issue-trigger', function() {
 
         <div class="row">
           <div class="col s12 item-select">
+            <h6>Repo</h6>
             <input name="repo" type="hidden" />
             <% @milestone.repos.each do |repo_name| %>
-              <label for="repo" class="<%= 'active' if repo_name == 'attribute' %>"><%= repo_name %></label>
+              <label for="repo" ><%= repo_name %></label>
             <% end %>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col s12 item-select">
+            <h6>Assignee</h6>
+            <input name="assignee" type="hidden" />
+            <% @milestone.contributors.each do |contributor| %>
+              <label for="assignee"><%= contributor %></label>
+            <% end %>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col s1 offset-s10">
+            <a class="waves-effect waves-default btn">Add</a>
           </div>
         </div>
 

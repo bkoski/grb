@@ -32,6 +32,14 @@ class Milestone
     end
   end
 
+  def issues
+    Issue.where(milestone: self.title).all
+  end
+
+  def contributors
+    issues.map(&:assignee).uniq.compact.sort
+  end
+
   #### TODO: rename method
 
   private
