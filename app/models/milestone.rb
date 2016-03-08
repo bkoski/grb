@@ -7,6 +7,7 @@ class Milestone
   field :title,       type: String
   field :state,       type: String
   field :description, type: String
+  field :repos, type: Array, default: []
 
   ### TODO: allow reference to multiple gh milestones
 
