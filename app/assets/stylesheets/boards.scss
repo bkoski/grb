@@ -18,6 +18,10 @@
     margin-top: 20px;;
   }
 
+  .add-issue-trigger {
+    color: #AAA;
+  }
+
   h5 {
     margin-top: 40px;
     font-size: 24px;
@@ -58,10 +62,16 @@
 }
 
 #add-issue-modal {
-  /* label focus color */
+
+  input[name=title] {
+    font-size: 1.5rem;
+  }
+
+   /* label focus color */
    input[type=text]:focus + label, textarea:focus + label  {
      color: #666;
    }
+
    /* label underline focus color */
    input[type=text]:focus, textarea:focus {
      border-bottom: 1px solid #888;
@@ -69,7 +79,10 @@
    }
 
    .btn.waves-default {
-    background-color: #888;
+     background-color: #888;
+     position: relative;
+     left: 30px;
+     top: 10px;
    }
 }
 
