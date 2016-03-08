@@ -84,9 +84,12 @@ $(document).on('click', '.add-issue-trigger', function() {
 
 <div id="add-issue-modal" class="modal">
   <div class="modal-content">
-    <h5>New Issue - <%= params[:title] %></h5>
     <div class="row">
+  
       <form class="col s12">
+        <div class="row">
+          <h5 class="col s12">New Issue - <%= params[:title] %></h5>
+        </div>
         
         <div class="row">
           <div class="input-field col s12">
@@ -105,8 +108,8 @@ $(document).on('click', '.add-issue-trigger', function() {
 
         <div class="row">
           <div class="col s12 item-select">
-            <h6>Repo</h6>
             <input name="repo" type="hidden" />
+            <span class="title">Repo</span>
             <% @milestone.repos.each do |repo_name| %>
               <label for="repo" ><%= repo_name %></label>
             <% end %>
@@ -115,8 +118,8 @@ $(document).on('click', '.add-issue-trigger', function() {
 
         <div class="row">
           <div class="col s12 item-select">
-            <h6>Assignee</h6>
             <input name="assignee" type="hidden" />
+            <span class="title">Assigned To</span>
             <% @milestone.contributors.each do |contributor| %>
               <label for="assignee"><%= contributor %></label>
             <% end %>
