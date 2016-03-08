@@ -6,6 +6,10 @@ class IssuesController < ApplicationController
     head 200
   end
 
+  def create
+    head 200
+  end
+
   def update
     @issue = Issue.find(params[:id])
     @issue.set_status!(params[:status]) if params[:status]

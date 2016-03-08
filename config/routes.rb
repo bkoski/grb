@@ -5,6 +5,7 @@ Rails.application.routes.draw do
 
   put '/issues/sort'       => 'issues#update_sort_order'
   put '/issues/:id'        => 'issues#update'
+  post '/issues'           => 'issues#create'
   
   get '/milestones/:title' => 'boards#milestone', as: 'show_milestone'
   get '/boards' => 'boards#show'

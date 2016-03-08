@@ -63,6 +63,26 @@ $(document).on('click', '.add-issue-trigger', function() {
   $('#add-issue-modal input').focus();
 });
 
+$(document).on('click', '#add-issue-modal .btn', function(e) {
+  if($(e.currentTarget).hasClass('disabled')) {
+    return;
+  }
+
+  $(e.currentTarget).addClass('disabled');
+  $.ajax('/issues', {
+    method: 'POST',
+    data: $('#add-issue-modal form').serialize(),
+    error: function() {
+      alert('Save failed');
+      $(e.currentTarget).removeClass('disabled');
+    },
+    success: function() {
+      $(e.currentTarget).removeClass('disabled');
+      $('#add-issue-modal').closeModal();
+    }
+  });
+});
+
   $('.modal-trigger').leanModal({
       dismissible: true, // Modal can be dismissed by clicking outside of the modal
       opacity: .5, // Opacity of modal background
@@ -100,7 +120,7 @@ $(document).on('click', '.add-issue-trigger', function() {
 
         <div class="row">
           <div class="input-field col s12">
-            <textarea id="description" class="materialize-textarea"></textarea>
+            <textarea name="description" class="materialize-textarea"></textarea>
             <label for="description">Description</label>
           </div>
         </div>
