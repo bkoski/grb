@@ -78,6 +78,8 @@ $(document).on('click', '#add-issue-modal .btn', function(e) {
     },
     success: function() {
       $(e.currentTarget).removeClass('disabled');
+      $('#add-issue-modal input, #add-issue-modal textarea').val('');
+      $('#add-issue-modal .item-select label').removeClass('active');
       $('#add-issue-modal').closeModal();
     }
   });
