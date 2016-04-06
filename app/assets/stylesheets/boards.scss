@@ -39,6 +39,11 @@
   min-height: 40px;
 }
 
+// define width for unassigned items
+.reassign-modal-trigger {
+  width: 25px;
+}
+
 #reassign-modal {
   width: 450px;
   max-width: 100%;
