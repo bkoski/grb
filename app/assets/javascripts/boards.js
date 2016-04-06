@@ -21,3 +21,44 @@ $(document).ready(function() {
     update: function(e, ui) { updateItemSort(ui.item); }
   });
 });
+
+/****************************/
+/* #reassign-modal handling */
+/****************************/
+
+$(document).on('click', '.reassign-modal-trigger', function(e) {
+  var currentOffset = $(e.currentTarget).offset();
+  var issueId       = $(e.currentTarget).closest('.issue').data('object-id');
+
+  $('#container').css({'position' : 'relative'})
+  $('#reassign-modal').addClass('active').css({
+    top: currentOffset.top + $(e.currentTarget).height(),
+    left: currentOffset.left - $('#reassign-modal').width() + $(e.currentTarget).width()
+  });
+  $('#reassign-modal').data('object-id', issueId);
+
+  e.stopPropagation();
+});
+
+// dismiss modal by clicking outside
+$(document).on('click', function(e) {
+  if(!$(e.currentTarget).hasClass('reassign-modal-trigger') && $('#reassign-modal').is(':visible') && $(e.target).closest('#reassign-modal').length == 0) {
+    $('#reassign-modal').removeClass('active');
+  }
+});
+
+// handle click on #reassign-modal avatar
+$(document).on('click', '#reassign-modal .milestone-contributor', function(e) {
+  updateIssue($('#reassign-modal').data('object-id'), { assignee: $(e.currentTarget).data('contributor') });
+  $('#reassign-modal').removeClass('active');
+});
+
+// select item in Someone else... dropdown
+$(document).on('change', '#reassign-modal select', function(e) {
+  updateIssue($('#reassign-modal').data('object-id'), { assignee: $('#reassign-modal select').val() });
+});
+
+// init Someone else... dropdown
+$(document).ready(function() {
+  $('#reassign-modal select').material_select();
+});

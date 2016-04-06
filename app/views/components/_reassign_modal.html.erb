@@ -1,0 +1,22 @@
+<div id="reassign-modal">
+  <div>
+    <% @milestone.contributors[0,4].each do |c| %>
+      <div class="milestone-contributor" data-contributor="<%= c %>">
+        <div class="avatar contributor-<%= c %>"></div>
+        <%= c %>
+      </div>
+    <% end %>
+    <div style="clear: both;"></div>
+  </div>
+  <div class="row" style="margin-bottom: 0;">
+    <div class="input-field col" style="width: 100%;">
+      <select>
+        <option value="" disabled selected>Someone else...</option>
+        <option value="">Unassigned</option>
+        <% Contributor.distinct(:login).each do |other_contributor| %>
+          <option value="<%= other_contributor %>"><%= other_contributor %></option>
+        <% end %>
+      </select>
+    </div>
+  </div>
+</div>
