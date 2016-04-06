@@ -74,7 +74,7 @@ class Issue
       self.labels |= ['in-progress']
     when 'inactive'
       # GH update: state open, - label in progress
-      self.state  = 'closed'
+      self.state  = 'open'
       self.labels.delete('in-progress')
     when 'priority'
       self.state = 'open'
