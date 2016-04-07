@@ -10,6 +10,8 @@ gem 'github_api'
 gem 'ejs'
 gem 'pusher'
 
+gem 'omniauth-github'
+
 group :development, :test do
   gem 'byebug'
 end
