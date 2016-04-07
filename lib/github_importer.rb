@@ -102,48 +102,7 @@ class GithubImporter
       list_query[:since] = 3.hours.ago.utc.iso8601 unless import_everything?
 
       issues = Github.issues.list(list_query).to_a
-
-      issues.each do |issue_data|
-        i = Issue.find_or_initialize_by(github_id: issue_data.id)
-
-        i.repo_name = repo.name
-        i.number    = issue_data.number
-        i.url       = issue_data.html_url
-        i.state     = issue_data.state
-        i.title     = issue_data.title
-        i.assignee  = issue_data.assignee.try(:login)
-        
-        i.milestone = issue_data.milestone.try(:title)
-        i.milestone_github_id = issue_data.milestone.try(:id)
-
-        if i.milestone.present? 
-          m = Milestone.find_or_initialize_by(github_id: i.milestone_github_id)
-          m.update_attributes!(state: issue_data.milestone.state,
-                               title: issue_data.milestone.title,
-                              description: issue_data.milestone.description)
-        end
-
-
-        i.opened_at = DateTime.parse(issue_data.created_at)
-
-        if i.assignee.present? && !Contributor.where(login: i.assignee).exists?
-          Contributor.create!(login: i.assignee, avatar_url: issue_data.assignee.avatar_url)
-        end
-
-        # repo.update_attributes!(last_activity_at: i.opened_at) if i.opened_at > repo.last_activity_at 
-
-        if issue_data.closed_at.present?
-          i.closed_at = DateTime.parse(issue_data.closed_at)
-          i.closed_by = Github.issues.get(ENV['DEFAULT_GITHUB_ORG'], repo.name, issue_data.number).try(:closed_by).try(:login) if i.closed_by.blank?
-
-          # repo.update_attributes!(last_activity_at: i.closed_at) if i.closed_at > repo.last_activity_at
-        else
-          i.closed_at = nil
-          i.closed_by = nil
-        end
-
-        i.save!
-      end
+      issues.each { |issue_data| Issue.ingest(repo.name, issue_data) }
     end
   end
 
