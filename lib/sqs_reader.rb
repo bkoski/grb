@@ -11,7 +11,7 @@ class SqsReader
       # Right now, we only listen to issue events:
       if github_event.issue
         issue = Issue.ingest(github_event.repository.name, github_event.issue)
-        puts "Ingested #{github_event.issue.action} for #{github_event.repository.full_name}# #{github_event.issue.number}."
+        puts "Ingested #{github_event.action} for #{github_event.repository.full_name}# #{github_event.issue.number}."
       end
     end
   end
