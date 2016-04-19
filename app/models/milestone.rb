@@ -44,7 +44,7 @@ class Milestone
 
   private
   def default_sort_order
-    self.sort_order = Milestone.maximum(:sort_order).to_i + 1
+    self.sort_order = Milestone.max(:sort_order).to_i + 1
   end
 
 end
