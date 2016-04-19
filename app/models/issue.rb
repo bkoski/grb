@@ -77,11 +77,12 @@ class Issue
 
     if i.milestone.present? 
       m = Milestone.find_or_initialize_by(github_id: i.milestone_github_id)
-      m.update_attributes!(state: issue_data.milestone.state,
-                           title: issue_data.milestone.title,
-                          description: issue_data.milestone.description)
+      m.state = issue_data.milestone.state
+      m.title = issue_data.milestone.title
+      m.description = issue_data.milestone.descripton
+      m.repos       |= [i.repo_name]
+      m.save!
     end
-
 
     i.opened_at = DateTime.parse(issue_data.created_at)
 
