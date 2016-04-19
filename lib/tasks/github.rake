@@ -1,4 +1,9 @@
 namespace :github do
+
+  task :sqs_import => :environment do
+    SqsReader.run
+  end
+
   task :import => :environment do
     puts "Starting import at #{Time.now}..."
     start_time = Time.now
