@@ -94,19 +94,20 @@ class Issue
 
     # repo.update_attributes!(last_activity_at: i.opened_at) if i.opened_at > repo.last_activity_at 
 
-    if issue_data.closed_at.present? && i.closed_by.blank?
-      i.closed_at = DateTime.parse(issue_data.closed_at)
+    # if issue_data.closed_at.present? && i.closed_by.blank?
+    #   i.closed_at = DateTime.parse(issue_data.closed_at)
 
-      closer   = i.closed_by
-      closer ||= Github.issues.get(ENV['DEFAULT_GITHUB_ORG'], repo_name, issue_data.number).try(:closed_by)
+    #   closer   = i.closed_by
+    #   closer ||= Github.issues.get(ENV['DEFAULT_GITHUB_ORG'], repo_name, issue_data.number).try(:closed_by)
 
-      i.closed_by = closer.try(:login)
+    #   i.closed_by = closer.try(:login)
 
-      # repo.update_attributes!(last_activity_at: i.closed_at) if i.closed_at > repo.last_activity_at
-    else
-      i.closed_at = nil
-      i.closed_by = nil
-    end
+    #   # repo.update_attributes!(last_activity_at: i.closed_at) if i.closed_at > repo.last_activity_at
+    # else
+    
+    #   i.closed_at = nil
+    #   i.closed_by = nil
+    # end
 
     i.save!
   end
