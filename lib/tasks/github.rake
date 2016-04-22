@@ -4,6 +4,10 @@ namespace :github do
     SqsReader.run
   end
 
+  task :scrape_issues => :environment do
+    loop { IssueScrape.run; sleep 15; }
+  end
+
   task :import => :environment do
     puts "Starting import at #{Time.now}..."
     start_time = Time.now
