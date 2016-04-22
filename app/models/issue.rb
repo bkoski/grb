@@ -65,6 +65,8 @@ class Issue
   def self.ingest(repo_name, issue_data)
     i = Issue.find_or_initialize_by(github_id: issue_data.id)
 
+    puts "Importing #{repo_name} ##{issue_data.number}."
+
     i.repo_name = repo_name
     i.number    = issue_data.number
     i.url       = issue_data.html_url
