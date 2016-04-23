@@ -36,6 +36,8 @@ class Issue
   index({ opened_at: 1 })
   index({ closed_at: 1 })
 
+  after_save :broadcast_to_pusher
+
   def sort_ts
     closed_at || opened_at || updated_at
   end
@@ -135,10 +137,11 @@ class Issue
       raise ArgumentError, "Unknown status '#{status}'!"
     end
 
-    # TODO: this probably should be broadcast as the result of a GH webhook
-    $pusher.trigger('grb', 'update', self.to_broadcast_h.to_json)
-
     self.save!
+  end
+
+  def broadcast_to_pusher
+    $pusher.trigger('grb', 'update', self.to_broadcast_h.to_json)
   end
 
 end
