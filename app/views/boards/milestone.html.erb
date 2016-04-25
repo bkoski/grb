@@ -1,12 +1,44 @@
 
-<!--
+<% if @recently_closed_issues.present? || @recent_commits.present? %>
+  <a class="completed-work-prompt" href="#">
+    <% if @recently_closed_issues.present? %>
+      <%= pluralize @recently_closed_issues.length, 'issue' %> closed today<%= ',' if @recent_commits.present? %>
+    <% end %>
+    <%= pluralize @recent_commits.length, 'commit' if @recent_commits.present? %> &raquo;
+  </a>
+<% end %>
 
-<h2>Completed</h2>
+<div style="clear: both;"></div>
 
-3 issues
-57 commits
-X deploys
--->
+<div class="grouping completed-work">
+  <h3>Issues Closed</h3>
+  <table>
+    <% @recently_closed_issues.each do |issue| %>
+      <tr>
+        <td class="author"><%= issue.assignee %></td>
+        <td class="repo"><%= issue.repo_name %></td>
+        <td class="title"><%= link_to truncate(issue.title, length: 140, separator: ' '), issue.url, target: '_blank' %></td>
+      </tr>
+    <% end %>
+  </table>
+</div>
+
+<div class="grouping completed-work">
+  <h3>Commits</h3>
+  <table>
+    <% @recent_commits.each do |commit| %>
+      <tr>
+        <td class="author"><%# commit.author %>aaron.krolik</td>
+        <td class="repo"><%= commit.repo_name %></td>
+        <td class="title"><%= link_to truncate(commit.message, length: 140, separator: ' '), commit.url, target: '_blank' %></td>
+      </tr>
+    <% end %>
+  </table>
+</div>
+
+
+
+<div style="clear: both;"></div>
 
 <div class="grouping">
   <h3>In Progress</h3>

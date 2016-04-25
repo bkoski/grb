@@ -32,6 +32,10 @@ class Milestone
     end
   end
 
+  def commits
+    Commit.in(repo_name: repos).all
+  end
+
   def issues
     Issue.where(milestone: self.title).all
   end

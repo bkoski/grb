@@ -9,6 +9,8 @@ class Commit
   field :url,       type: String
   field :committed_at, type: DateTime
 
+  scope :today, -> { gte(committed_at: 24.hours.ago) }
+
   index({ repo_name: 1, committed_at: -1 })
   index({ repo_name: 1, sha: 1 }, { unique: true })
 

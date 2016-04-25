@@ -20,6 +20,12 @@ $(document).ready(function() {
     items: '.issue',
     update: function(e, ui) { updateItemSort(ui.item); }
   });
+
+  $('.completed-work-prompt').click(function(e) {
+    e.preventDefault();
+    $('.completed-work-prompt').hide();
+    $('.grouping.completed-work').show();
+  });
 });
 
 /****************************/

@@ -21,6 +21,8 @@ class BoardsController < ApplicationController
     @title            = params[:title]
     @milestone        = Milestone.find_by(title: params[:title])
     @issues           = Issue.where(milestone: params[:title], state: 'open').all
+    @recently_closed_issues = @milestone.issues.closed_today.desc(:closed_at)
+    @recent_commits   = @milestone.commits.today.desc(:committed_at)
   end
 
   def list_milestones

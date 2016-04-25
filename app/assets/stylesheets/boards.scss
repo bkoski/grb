@@ -112,6 +112,48 @@
    }
 }
 
+.completed-work-prompt {
+  width: 100%;
+  display: block;
+  text-align: center;
+  margin: 20px auto;
+  font-size: 18px;
+  color: #AAA;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.completed-work {
+  display: none;
+
+  td {
+    padding: 0;
+    padding-bottom: 5px;
+    vertical-align: top;
+  }
+
+  .author {
+    width: 100px;
+  }
+
+  .repo {
+    width: 75px;
+    font-weight: bold;
+    margin-right: 15px;
+    color: #AAA;
+    font-size: 12px;
+    padding-top: 3px;
+  }
+
+  .title a {
+    color: #000;
+    font-size: 17px;
+    &:hover { text-decoration: underline; }
+  }
+}
+
 .milestone, .issue {
   border: 1px solid #EFEFEF;
   margin-bottom: -1px;
