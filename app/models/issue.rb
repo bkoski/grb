@@ -5,6 +5,8 @@ class Issue
 
   # belongs_to :repo, index: true
 
+  has_and_belongs_to_many :commits, order: :committed_at.desc
+
   field :repo_name, type: String
   field :number,    type: Integer
   field :github_id, type: Integer

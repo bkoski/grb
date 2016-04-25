@@ -11,8 +11,12 @@ class Commit
 
   scope :today, -> { gte(committed_at: 24.hours.ago) }
 
+  has_and_belongs_to_many :issues
+
   index({ repo_name: 1, committed_at: -1 })
   index({ repo_name: 1, sha: 1 }, { unique: true })
+
+  before_save :check_for_issue_associations
 
   def self.import(repo_name: nil, branch: nil, commit_data: nil)
     commit = self.find_or_initialize_by(repo_name: repo_name, sha: commit_data.id || commit_data.sha)
@@ -40,6 +44,15 @@ class Commit
   def self.scrape_for_repo(repo_name: repo_name, branch: 'master', since: 24.years.ago)
     all_commits = Github.repos.commits.list ENV['DEFAULT_GITHUB_ORG'], repo_name, since: since, sha: branch
     all_commits.each { |c| import(repo_name: repo_name, branch: branch, commit_data: c) }
+  end
+
+  private
+  def check_for_issue_associations
+    self.issues = []
+    self.message.scan(/#(\d+)/) do |issue_number_match|
+      self.issues << Issue.where(repo_name: repo_name, number: issue_number_match.first).first
+    end
+    self.issues.compact!
   end
 
 end
