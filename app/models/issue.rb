@@ -75,6 +75,8 @@ class Issue
     i.state     = issue_data.state
     i.title     = issue_data.title
     i.assignee  = issue_data.assignee.try(:login)
+
+    i.labels    = issue_data.labels.map { |label| label.name }
     
     i.milestone = issue_data.milestone.try(:title)
     i.milestone_github_id = issue_data.milestone.try(:id)
@@ -105,25 +107,50 @@ class Issue
     when 'closed'
       # GH update: state closed, - label in progress
       self.state  = 'closed'
-      self.labels.delete('in-progress')
+      remove_label('in-progress')
     when 'active'
       # GH update: state open + label in progress
       self.state = 'open'
-      self.labels |= ['in-progress']
+      add_label('in-progress')
     when 'inactive'
       # GH update: state open, - label in progress
       self.state  = 'open'
-      self.labels.delete('in-progress')
+      remove_label('in-progress')
     when 'priority'
       self.state = 'open'
-      self.labels |= ['priority']
+      add_label('priority')
     when 'normal_priority'
-      self.labels -= ['priority']
+      remove_label('priority')
     else
       raise ArgumentError, "Unknown status '#{status}'!"
     end
 
     self.save!
+  end
+
+  LABEL_COLORS = {
+    'in-progress' => '009933',
+    'priority' => 'cc0000',
+    'test1' => 'ffff00'
+  }
+
+  def add_label(label_name)
+    github = Github.new
+    labels = github.issues.labels.add(ENV['DEFAULT_GITHUB_ORG'], repo_name, number, label_name)
+
+    target_color = LABEL_COLORS[label_name]
+    if target_color && labels.first.color != target_color
+      github.issues.labels.update(ENV['DEFAULT_GITHUB_ORG'], repo_name, label_name, name: label_name, color: target_color)
+    end
+
+    self.labels |= [label_name]
+  end
+
+  def remove_label(label_name)
+    github = Github.new
+    github.issues.labels.remove(ENV['DEFAULT_GITHUB_ORG'], repo_name, number, label_name: label_name)
+
+    self.labels -= [label_name]
   end
 
   def broadcast_to_pusher
