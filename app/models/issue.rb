@@ -89,27 +89,13 @@ class Issue
     end
 
     i.opened_at = DateTime.parse(issue_data.created_at)
+    i.closed_at = DateTime.parse(issue_data.closed_at) rescue nil
 
     if i.assignee.present? && !Contributor.where(login: i.assignee).exists?
       Contributor.create!(login: i.assignee, avatar_url: issue_data.assignee.avatar_url)
     end
 
     # repo.update_attributes!(last_activity_at: i.opened_at) if i.opened_at > repo.last_activity_at 
-
-    # if issue_data.closed_at.present? && i.closed_by.blank?
-    #   i.closed_at = DateTime.parse(issue_data.closed_at)
-
-    #   closer   = i.closed_by
-    #   closer ||= Github.issues.get(ENV['DEFAULT_GITHUB_ORG'], repo_name, issue_data.number).try(:closed_by)
-
-    #   i.closed_by = closer.try(:login)
-
-    #   # repo.update_attributes!(last_activity_at: i.closed_at) if i.closed_at > repo.last_activity_at
-    # else
-    
-    #   i.closed_at = nil
-    #   i.closed_by = nil
-    # end
 
     i.save!
   end
