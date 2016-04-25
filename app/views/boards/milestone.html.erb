@@ -28,7 +28,7 @@
   <table>
     <% @recent_commits.each do |commit| %>
       <tr>
-        <td class="author"><%# commit.author %>aaron.krolik</td>
+        <td class="author"><%= commit.author %></td>
         <td class="repo"><%= commit.repo_name %></td>
         <td class="title"><%= link_to truncate(commit.message, length: 140, separator: ' '), commit.url, target: '_blank' %></td>
       </tr>
