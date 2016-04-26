@@ -106,6 +106,7 @@ class Issue
     # repo.update_attributes!(last_activity_at: i.opened_at) if i.opened_at > repo.last_activity_at 
 
     i.save!
+    i
   end
 
   def set_status!(status)
