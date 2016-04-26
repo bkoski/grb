@@ -5,6 +5,7 @@ class Milestone
   
   field :github_id,   type: Integer
   field :title,       type: String
+  field :number,      type: Integer
   field :state,       type: String
   field :description, type: String
   field :repos, type: Array, default: []

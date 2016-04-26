@@ -88,8 +88,9 @@ class Issue
 
     if i.milestone.present? 
       m = Milestone.find_or_initialize_by(github_id: i.milestone_github_id)
-      m.state = issue_data.milestone.state
-      m.title = issue_data.milestone.title
+      m.state  = issue_data.milestone.state
+      m.title  = issue_data.milestone.title
+      m.number = issue_data.milestone.number
       m.description = issue_data.milestone.descripton
       m.repos       |= [i.repo_name]
       m.save!
