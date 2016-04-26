@@ -26,6 +26,8 @@ function IssuesCollection(issues) {
   this.registerRenderer = function(opts) {
     this.registerForUpdates(function(issues) {
       var matching_issues = _.filter(issues, opts.filter);
+      matching_issues = _.sortBy(matching_issues, function(issue) { return issue.sort_order });
+
       var new_html = _.map(matching_issues, function(issue) { return JST['templates/' + opts.template_name](_.extend(issue, { opts: opts.template_opts })); }).join('');
       $(opts.target_el).html(new_html);
 

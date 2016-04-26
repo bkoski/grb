@@ -64,6 +64,7 @@ class Issue
       in_progress: in_progress?,
       priority: priority?,
       url: url,
+      sort_order: sort_order,
       commits: commits.map(&:to_broadcast_h)
     }
   end
