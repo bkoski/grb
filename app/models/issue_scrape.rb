@@ -13,7 +13,7 @@ class IssueScrape
 
   index({ created_at: 1 }, { expire_after_seconds: 1.week })
 
-  def self.run
+  def self.run(backfill_for: nil)
     most_recent_scrape = self.desc(:created_at).first
 
     connection_opts = {}
@@ -24,7 +24,9 @@ class IssueScrape
       auto_pagination: true
     }
 
-    if most_recent_scrape
+    if backfill_for
+      req_params[:since] = backfill_for.ago.utc.iso8601
+    elsif most_recent_scrape
       req_params[:since]        = most_recent_scrape.last_update_time
       connection_opts[:headers] = { 'If-None-Match' => most_recent_scrape.etag }
     else
