@@ -1,6 +1,5 @@
-
 <% if @recently_closed_issues.present? || @recent_commits.present? %>
-  <a class="completed-work-prompt" href="#">
+  <a class="completed-work-toggle" href="#">
     <% if @recently_closed_issues.present? %>
       <%= pluralize @recently_closed_issues.length, 'issue' %> closed today<%= ',' if @recent_commits.present? %>
     <% end %>
@@ -10,39 +9,28 @@
 
 <div style="clear: both;"></div>
 
-<div class="grouping completed-work">
-  <h3>Issues Closed</h3>
-  <table>
-    <% @recently_closed_issues.each do |issue| %>
-      <tr>
-        <td class="author"><%= issue.assignee %></td>
-        <td class="repo"><%= issue.repo_name %></td>
-        <td class="title"><%= link_to truncate(issue.title, length: 140, separator: ' '), issue.url, target: '_blank' %></td>
-      </tr>
-    <% end %>
-  </table>
+<div id="issues-closed-grouping" class="grouping">
+  <h3>Closed Today</h3>
+  <div id="issues-closed-today" class="issues not-sortable"></div>
 </div>
 
-<div class="grouping completed-work">
-  <h3>Commits</h3>
-  <table>
-    <% @recent_commits.each do |commit| %>
-      <tr>
-        <td class="author"><%= commit.author %></td>
-        <td class="repo"><%= commit.repo_name %></td>
-        <td class="title"><%= link_to truncate(commit.message, length: 140, separator: ' '), commit.url, target: '_blank' %></td>
-      </tr>
-    <% end %>
-  </table>
-</div>
-
-
-
-<div style="clear: both;"></div>
+<% if @other_commits.present? %>
+  <div id="other-commits-grouping" class="grouping">
+    <h3>Other Commits</h3>
+    <div id="other-commits" class="commits">
+      <% @other_commits.each do |commit| %>
+        <div class="commit">
+          <div class="author"><div class="avatar contributor-<%= commit.author %>" style="display: inline-block; height: 15px; "></div><%= commit.author %></div>
+          <div class="title"><a href="<%= commit.url %>" target="_blank"><%= commit.message %></a></div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+<% end %>
 
 <div class="grouping">
   <h3>In Progress</h3>
-  <div id="in-progress-issues" class="issues"></div>
+  <div id="in-progress-issues" class="issues not-sortable"></div>
 </div>
 
 <div class="grouping">
@@ -57,20 +45,32 @@
 
 
 <script>
+ $('.container').addClass('hide-completed-work');
+
  window.issuesCollection       = new IssuesCollection(<%= @issues.map(&:to_broadcast_h).to_json.html_safe %>);
- issuesCollection.masterFilter = function(issue) { console.log(issue.state, issue.milestone); return issue.state == 'open' && issue.milestone == <%= params[:title].to_json.html_safe %>; }
+ issuesCollection.masterFilter = function(issue) { console.log(issue.state, issue.milestone); return issue.milestone == <%= params[:title].to_json.html_safe %>; }
 
  issuesCollection.registerRenderer({
-  filter: function(issue) { return issue.in_progress == true },
+  filter: function(issue) { return issue.state == 'closed'; },
+  target_el: '#issues-closed-today',
+  template_name: 'issue',
+  template_opts: {
+    showCommits: true
+  }
+ });
+
+ issuesCollection.registerRenderer({
+  filter: function(issue) { return issue.in_progress == true && issue.state == 'open' },
   target_el: '#in-progress-issues',
   template_name: 'issue',
   template_opts: {
+    showCommits: true,
     actions: ['pause','complete','avatar-reassign']
   }
  });
 
  issuesCollection.registerRenderer({
-  filter: function(issue) { return issue.in_progress == false && issue.priority == true },
+  filter: function(issue) { return issue.in_progress == false && issue.priority == true && issue.state == 'open' },
   target_el: '#priority-issues',
   template_name: 'issue',
   template_opts: {
@@ -79,7 +79,7 @@
  });
 
  issuesCollection.registerRenderer({
-  filter: function(issue) { return issue.in_progress == false && issue.priority == false },
+  filter: function(issue) { return issue.in_progress == false && issue.priority == false && issue.state == 'open' },
   target_el: '#todo-list',
   template_name: 'issue',
   template_opts: {

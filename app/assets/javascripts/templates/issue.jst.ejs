@@ -20,3 +20,16 @@
   </div>
   <div style="clear: both;"></div>
 </div>
+<% if(opts.showCommits) { %>
+  <div class="commits">
+  <% _.each(commits, function(commit, idx) { %>
+    <div class="commit <% if(idx > 4) { %>hidden<% } %>">
+      <div class="author"><div class="avatar contributor-<%= commit.author %>" style="display: inline-block; height: 15px; "></div><%= commit.author %></div>
+      <div class="title"><a href="<%= commit.url %>" target="_blank"><%= commit.message %></a></div>
+    </div>
+    <% if(idx == 4 && commits.length > 5) { %>
+      <div class="show-more"><button><%= commits.length -1 %> More </button></div>
+    <% } %>
+  <% }) %>
+  </div>
+<% } %>

@@ -1,5 +1,6 @@
 class Commit
   include Mongoid::Document
+  include ActionView::Helpers::TextHelper
 
   field :sha,       type: String
   field :repo_name, type: String
@@ -16,7 +17,7 @@ class Commit
   index({ repo_name: 1, committed_at: -1 })
   index({ repo_name: 1, sha: 1 }, { unique: true })
 
-  before_save :check_for_issue_associations
+  after_save :check_for_issue_associations
 
   def self.import(repo_name: nil, branch: nil, commit_data: nil)
     commit = self.find_or_initialize_by(repo_name: repo_name, sha: commit_data.id || commit_data.sha)
@@ -46,10 +47,18 @@ class Commit
     all_commits.each { |c| import(repo_name: repo_name, branch: branch, commit_data: c) }
   end
 
+  def to_broadcast_h
+    { 
+      url: url,
+      message: truncate(message, length: 80, separator: ' '),
+      author: author
+    }
+  end
+
   private
   def check_for_issue_associations
     self.issues = []
-    self.message.scan(/#(\d+)/) do |issue_number_match|
+    message.scan(/#(\d+)/) do |issue_number_match|
       self.issues << Issue.where(repo_name: repo_name, number: issue_number_match.first).first
     end
     self.issues.compact!

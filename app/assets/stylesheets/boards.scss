@@ -112,7 +112,7 @@
    }
 }
 
-.completed-work-prompt {
+.completed-work-toggle {
   width: 100%;
   display: block;
   text-align: center;
@@ -123,6 +123,10 @@
   &:hover {
     text-decoration: underline;
   }
+}
+
+.container.hide-completed-work {
+  .commits, #issues-closed-grouping, #other-commits-grouping { display: none !important; }
 }
 
 .completed-work {
@@ -154,6 +158,61 @@
   }
 }
 
+.commits {
+  margin-top: 10px; 
+
+  .commit {
+    padding: 2px 20px;
+    clear: both;
+
+    .author {
+      float: left;
+      width: 120px;
+      font-size: 12px;
+      color: #999;
+      overflow-x: hidden;
+      white-space: nowrap;
+    }
+
+    .avatar {
+      position: relative;
+      top: 4px;
+    }
+
+    .title {
+      font-size: 15px;
+      overflow-x: hidden;
+      white-space: nowrap;
+    }
+  }
+
+  .show-more {
+    width: 100%;
+    text-align: center;
+
+    button {
+      border: none;
+      background: none;
+      margin: 0 auto;
+      font-size: 11px;
+      text-transform: uppercase;
+      color: #AAA;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+}
+
+.commits, .milestone, .issue {
+  .title {
+    a { color: #111; }
+    a:hover { text-decoration: underline; }
+    font-size: 18px;
+  }
+}
+
 .milestone, .issue {
   border: 1px solid #EFEFEF;
   margin-bottom: -1px;
@@ -163,6 +222,11 @@
 
   &:hover { cursor: -webkit-grab; cursor:-moz-grab; }
   &:active { cursor: -webkit-grabbing; cursor:-moz-grabbing; }
+
+  .not-sortable & {
+    &:hover { cursor: inherit; }
+    &:active { cursor: inherit; }
+  }
 
   .content {
     color: #111;
@@ -182,18 +246,12 @@
       padding-top: 5px;
     }
 
-    .repo{
+    .repo {
       font-weight: bold;
       margin-right: 15px;
       color: #AAA;
       font-size: 12px;
       padding-top: 8px;
-    }
-
-    .title {
-      a { color: #111; }
-      a:hover { text-decoration: underline; }
-      font-size: 18px;
     }
   }
 

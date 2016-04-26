@@ -59,10 +59,12 @@ class Issue
       repo_name: repo_name,
       state: state,
       title: title,
+      number: number,
       milestone: milestone,
       in_progress: in_progress?,
       priority: priority?,
-      url: url
+      url: url,
+      commits: commits.map(&:to_broadcast_h)
     }
   end
 

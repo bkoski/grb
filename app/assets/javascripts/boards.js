@@ -16,15 +16,21 @@ $(document).ready(function() {
     updateIssue(target.closest('.issue').data('object-id'), { status: target.data('status') });
   });
 
-  $('.issues').sortable({
+  $('.issues:not(.not-sortable)').sortable({
     items: '.issue',
     update: function(e, ui) { updateItemSort(ui.item); }
   });
 
-  $('.completed-work-prompt').click(function(e) {
+  $('.completed-work-toggle').click(function(e) {
     e.preventDefault();
-    $('.completed-work-prompt').hide();
-    $('.grouping.completed-work').show();
+    $('.container').removeClass('hide-completed-work');
+    $(e.currentTarget).hide();
+  })
+
+  $(document).on('click', '.commits .show-more button', function(e) {
+    e.preventDefault();
+    $(e.currentTarget).closest('.commits').find('.commit').removeClass('hidden');
+    $(e.currentTarget).hide();
   });
 });
 
