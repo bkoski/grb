@@ -31,7 +31,7 @@ class IssueScrape
       req_params[:since] = 3.hours.ago.utc.iso8601
     end
 
-    github = Github.new(connection_options: connection_opts)
+    github = Github.new(oauth_token: Thread.current[:github_token], connection_options: connection_opts)
     issues = github.issues.list(req_params)
 
     status = issues.response.status

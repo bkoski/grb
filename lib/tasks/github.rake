@@ -1,22 +1,15 @@
 namespace :github do
 
-  task :sqs_import => :environment do
+  task :sqs_import => [:environment, :set_service_token] do
     SqsReader.run
   end
 
-  task :scrape_issues => :environment do
+  task :scrape_issues => [:environment, :set_service_token] do
     loop { IssueScrape.run; sleep 15; }
   end
 
-  task :import => :environment do
-    puts "Starting import at #{Time.now}..."
-    start_time = Time.now
-
-    importer = GithubImporter.new
-    importer.import_everything = true if ENV['ALL'].present?
-    importer.run!
-
-    duration = Time.now - start_time
-    puts "Finished in #{'%0.2f' %  duration}s."
+  task :set_service_token do
+    Thread.current[:github_token] = ENV['GITHUB_TOKEN']
   end
+  
 end

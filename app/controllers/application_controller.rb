@@ -11,6 +11,8 @@ class ApplicationController < ActionController::Base
     if session[:github_token].blank?
       session[:next_url] = request.url
       redirect_to '/auth/github'
+    else
+      Thread.current[:github_token] = session[:github_token]
     end
   end
 

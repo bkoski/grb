@@ -140,7 +140,7 @@ class Issue
   }
 
   def add_label(label_name)
-    github = Github.new
+    github = Github.new oauth_token: Thread.current[:github_token]
     labels = github.issues.labels.add(ENV['DEFAULT_GITHUB_ORG'], repo_name, number, label_name)
 
     target_color = LABEL_COLORS[label_name]
@@ -152,7 +152,7 @@ class Issue
   end
 
   def remove_label(label_name)
-    github = Github.new
+    github = Github.new oauth_token: Thread.current[:github_token]
     github.issues.labels.remove(ENV['DEFAULT_GITHUB_ORG'], repo_name, number, label_name: label_name)
 
     self.labels -= [label_name]
