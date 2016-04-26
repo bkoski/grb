@@ -158,6 +158,12 @@ class Issue
     self.labels -= [label_name]
   end
 
+  def assign_to(new_assignee)
+    self.assignee = new_assignee
+    github = Github.new oauth_token: Thread.current[:github_token]
+    github.issues.edit(ENV['DEFAULT_GITHUB_ORG'], repo_name, number, assignee: new_assignee)
+  end
+
   def broadcast_to_pusher
     $pusher.trigger('grb', 'update', self.to_broadcast_h.to_json)
   end

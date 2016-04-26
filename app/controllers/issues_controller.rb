@@ -12,6 +12,7 @@ class IssuesController < ApplicationController
 
   def update
     @issue = Issue.find(params[:id])
+    @issue.assign_to(params[:assignee]) if params[:assignee]
     @issue.set_status!(params[:status]) if params[:status]
     head 200
   end
