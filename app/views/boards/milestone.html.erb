@@ -100,16 +100,18 @@ $(document).on('click', '#add-issue-modal .btn', function(e) {
     return;
   }
 
-  $(e.currentTarget).addClass('disabled');
+  $('#add-issue-modal .btn').addClass('disabled');
+  $('#add-issue-modal .error-text').hide();
+  
   $.ajax('/issues', {
     method: 'POST',
     data: $('#add-issue-modal form').serialize(),
-    error: function() {
-      alert('Save failed');
-      $(e.currentTarget).removeClass('disabled');
+    error: function(xhr) {
+      $('#add-issue-modal .error-text').html(xhr.responseText).show();
+      $('#add-issue-modal .btn').removeClass('disabled');
     },
     success: function() {
-      $(e.currentTarget).removeClass('disabled');
+      $('#add-issue-modal .btn').removeClass('disabled');
       $('#add-issue-modal input, #add-issue-modal textarea').val('');
       $('#add-issue-modal .item-select label').removeClass('active');
       $('#add-issue-modal').closeModal();
@@ -138,7 +140,12 @@ $(document).on('click', '#add-issue-modal .btn', function(e) {
   
       <form>
         <div class="row">
-          <h5 class="col s12">New Issue - <%= params[:title] %></h5>
+          <h5 class="col s12">New Issue - <%= @milestone.title %></h5>
+          <input type="hidden" name="milestone_number" value="<%= @milestone.number %>" />
+        </div>
+
+        <div class="row">
+          <div class="col s12 error-text"></div>
         </div>
         
         <div class="row">

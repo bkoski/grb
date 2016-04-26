@@ -7,6 +7,11 @@ class IssuesController < ApplicationController
   end
 
   def create
+    missing_fields = [:repo_name, :title, :milestone_number].select { |attr| params[attr].blank? }
+    if missing_fields.length > 0
+      error_message = missing_fields.map(&:to_s).map(&:humanize).to_sentence + ' are missing.'
+      render(status: 400, text: error_message) and return
+    end
     head 200
   end
 
