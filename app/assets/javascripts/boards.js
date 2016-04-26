@@ -34,9 +34,59 @@ $(document).ready(function() {
   });
 });
 
-/****************************/
-/* #reassign-modal handling */
-/****************************/
+/******************************/
+/** new issue modal handling **/
+/******************************/
+
+// To use the new issue modal, include the partial and then create a div.add-issue-trigger
+
+// Handler to launch the modal
+$(document).on('click', '.add-issue-trigger', function() {
+  $('#add-issue-modal').openModal({ starting_top: '1%' });
+
+  // Clear out any errors.
+  $('#add-issue-modal .error-text').hide();
+
+  // If there is only one repo available for selection, select it.
+  if($('#add-issue-modal .item-select.repo-name label').length == 1) {
+    $('#add-issue-modal .item-select.repo-name label').first().click();
+  }
+
+  // Focus the title input when the modal opens.
+  $('#add-issue-modal input[type="text"]').focus();
+});
+
+// Save handler when clicking 'Add' button within modal.
+$(document).on('click', '#add-issue-modal .btn', function(e) {
+  if($(e.currentTarget).hasClass('disabled')) {
+    return;
+  }
+
+  $('#add-issue-modal .btn').addClass('disabled');
+  $('#add-issue-modal .error-text').hide();
+
+  $('#add-issue-modal input[name="sort"]').val($(e.currentTarget).data('sort'));
+  
+  $.ajax('/issues', {
+    method: 'POST',
+    data: $('#add-issue-modal form').serialize(),
+    error: function(xhr) {
+      $('#add-issue-modal .error-text').html(xhr.responseText).show();
+      $('#add-issue-modal .btn').removeClass('disabled');
+    },
+    success: function() {
+      $('#add-issue-modal .btn').removeClass('disabled');
+      $('#add-issue-modal input:not(.persistent-value), #add-issue-modal textarea').val('');
+      $('#add-issue-modal .item-select label').removeClass('active');
+      $('#add-issue-modal').closeModal();
+    }
+  });
+});
+
+
+/*****************************/
+/** reassign modal handling **/
+/*****************************/
 
 $(document).on('click', '.reassign-modal-trigger', function(e) {
   var currentOffset = $(e.currentTarget).offset();

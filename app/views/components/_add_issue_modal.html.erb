@@ -1,0 +1,59 @@
+<div id="add-issue-modal" class="modal">
+  <div class="modal-content">
+  
+      <form>
+        <div class="row">
+          <h5 class="col s12">New Issue - <%= @milestone.title %></h5>
+          <input type="hidden" name="milestone_github_id" class="persistent-value" value="<%= @milestone.github_id %>" />
+          <input type="hidden" name="milestone_number" class="persistent-value" value="<%= @milestone.number %>" />
+        </div>
+
+        <div class="row">
+          <div class="col s12 error-text"></div>
+        </div>
+        
+        <div class="row">
+          <div class="input-field col s12">
+            <input name="title" type="text">
+            <label for="title">Title</label>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="input-field col s12">
+            <textarea name="body" class="materialize-textarea"></textarea>
+            <label for="body">Description</label>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col s12 item-select repo-name">
+            <input name="repo_name" type="hidden" />
+            <span class="title">Repo</span>
+            <% @milestone.repos.each do |repo_name| %>
+              <label for="repo_name"><%= repo_name %></label>
+            <% end %>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col s12 item-select">
+            <input name="assignee" type="hidden" />
+            <span class="title">Assigned To</span>
+            <% @milestone.contributors.each do |contributor| %>
+              <label for="assignee"><%= contributor %></label>
+            <% end %>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col s12">
+            <input type="hidden" name="sort" />
+            <a class="waves-effect waves-default btn btn-small grey darken-1" data-sort="top">Add</a>
+            <a class="waves-effect waves-default btn btn-small grey lighten-1" data-sort="bottom">Low Priority <i class="material-icons right">vertical_align_bottom</i></a>
+          </div>
+        </div>
+      </form>
+
+  </div>
+</div>
