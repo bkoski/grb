@@ -6,6 +6,7 @@ class Issue
   # belongs_to :repo, index: true
 
   has_and_belongs_to_many :commits, order: :committed_at.desc
+  has_many :issue_comments
 
   field :repo_name, type: String
   field :number,    type: Integer

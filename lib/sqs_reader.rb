@@ -9,7 +9,11 @@ class SqsReader
 
       puts "Event: #{github_event.keys.sort.join(',')}"
 
-      if github_event.issue
+      if github_event.issue && github_event.comment
+        comment = IssueComment.ingest(github_event)
+        puts "Ingested #{github_event.action} comment for #{github_event.repository.full_name}# #{github_event.issue.number}."
+
+      elsif github_event.issue
         issue = Issue.ingest(github_event.repository.name, github_event.issue)
         puts "Ingested #{github_event.action} for #{github_event.repository.full_name}# #{github_event.issue.number}."
 
@@ -21,6 +25,7 @@ class SqsReader
         end
 
       end
+
     end
   end
 
