@@ -45,7 +45,7 @@ module SortOrder
 
   private
   def set_default_sort
-    self.sort_order = self.class.max(:sort_order)
+    self.sort_order = self.class.max(:sort_order).to_i + 1
   end
 
 end
