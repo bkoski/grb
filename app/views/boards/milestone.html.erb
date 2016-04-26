@@ -92,7 +92,17 @@
 
 $(document).on('click', '.add-issue-trigger', function() {
   $('#add-issue-modal').openModal({ starting_top: '1%' });
-  $('#add-issue-modal input').focus();
+
+  // Clear out any errors.
+  $('#add-issue-modal .error-text').hide();
+
+  // If there is only one repo available for selection, select it.
+  if($('#add-issue-modal .item-select.repo-name label').length == 1) {
+    $('#add-issue-modal .item-select.repo-name label').first().click();
+  }
+
+  // Focus the title input when the modal opens.
+  $('#add-issue-modal input[type="text"]').focus();
 });
 
 $(document).on('click', '#add-issue-modal .btn', function(e) {
@@ -102,6 +112,8 @@ $(document).on('click', '#add-issue-modal .btn', function(e) {
 
   $('#add-issue-modal .btn').addClass('disabled');
   $('#add-issue-modal .error-text').hide();
+
+  $('#add-issue-modal input[name="sort"]').val($(e.currentTarget).data('sort'));
   
   $.ajax('/issues', {
     method: 'POST',
@@ -112,7 +124,7 @@ $(document).on('click', '#add-issue-modal .btn', function(e) {
     },
     success: function() {
       $('#add-issue-modal .btn').removeClass('disabled');
-      $('#add-issue-modal input, #add-issue-modal textarea').val('');
+      $('#add-issue-modal input:not(.persistent-value), #add-issue-modal textarea').val('');
       $('#add-issue-modal .item-select label').removeClass('active');
       $('#add-issue-modal').closeModal();
     }
@@ -141,7 +153,8 @@ $(document).on('click', '#add-issue-modal .btn', function(e) {
       <form>
         <div class="row">
           <h5 class="col s12">New Issue - <%= @milestone.title %></h5>
-          <input type="hidden" name="milestone_number" value="<%= @milestone.number %>" />
+          <input type="hidden" name="milestone_github_id" class="persistent-value" value="<%= @milestone.github_id %>" />
+          <input type="hidden" name="milestone_number" class="persistent-value" value="<%= @milestone.number %>" />
         </div>
 
         <div class="row">
@@ -157,18 +170,17 @@ $(document).on('click', '#add-issue-modal .btn', function(e) {
 
         <div class="row">
           <div class="input-field col s12">
-            <textarea name="description" class="materialize-textarea"></textarea>
-            <label for="description">Description</label>
+            <textarea name="body" class="materialize-textarea"></textarea>
+            <label for="body">Description</label>
           </div>
         </div>
 
-
         <div class="row">
-          <div class="col s12 item-select">
-            <input name="repo" type="hidden" />
+          <div class="col s12 item-select repo-name">
+            <input name="repo_name" type="hidden" />
             <span class="title">Repo</span>
             <% @milestone.repos.each do |repo_name| %>
-              <label for="repo" ><%= repo_name %></label>
+              <label for="repo_name"><%= repo_name %></label>
             <% end %>
           </div>
         </div>
@@ -185,13 +197,12 @@ $(document).on('click', '#add-issue-modal .btn', function(e) {
 
         <div class="row">
           <div class="col s12">
-            <a class="waves-effect waves-default btn btn-small grey darken-1">Add</a>
-            <a class="waves-effect waves-default btn btn-small grey lighten-1">Low Priority <i class="material-icons right">vertical_align_bottom</i></a>
+            <input type="hidden" name="sort" />
+            <a class="waves-effect waves-default btn btn-small grey darken-1" data-sort="top">Add</a>
+            <a class="waves-effect waves-default btn btn-small grey lighten-1" data-sort="bottom">Low Priority <i class="material-icons right">vertical_align_bottom</i></a>
           </div>
         </div>
-
       </form>
-
 
   </div>
 </div>
