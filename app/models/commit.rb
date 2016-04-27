@@ -11,6 +11,7 @@ class Commit
   field :committed_at, type: DateTime
 
   scope :today, -> { gte(committed_at: 24.hours.ago) }
+  scope :not_associated_to_issue, -> { where(:issue_ids.with_size => 0) }
 
   has_and_belongs_to_many :issues
 

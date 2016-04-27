@@ -24,7 +24,7 @@ class BoardsController < ApplicationController
     @issues           += Issue.closed_today.where(milestone: params[:title]).all.to_a
     @recently_closed_issues = @milestone.issues.closed_today.desc(:closed_at)
     @recent_commits   = @milestone.commits.today.desc(:committed_at)
-    @other_commits    = @milestone.commits.where(number: nil).today.all
+    @other_commits    = @milestone.commits.not_associated_to_issue.today.all
   end
 
   def list_milestones
