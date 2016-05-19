@@ -118,6 +118,7 @@ $(document).on('click', '#reassign-modal .milestone-contributor', function(e) {
 // select item in Someone else... dropdown
 $(document).on('change', '#reassign-modal select', function(e) {
   updateIssue($('#reassign-modal').data('object-id'), { assignee: $('#reassign-modal select').val() });
+  $('#reassign-modal').removeClass('active');
 });
 
 // init Someone else... dropdown
