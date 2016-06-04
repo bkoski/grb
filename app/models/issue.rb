@@ -113,21 +113,19 @@ class Issue
   def set_status!(status)
     case status
     when 'closed'
-      # GH update: state closed, - label in progress
-      self.state  = 'closed'
+      set_issue_state('closed')
       remove_label('in-progress')
     when 'active'
-      # GH update: state open + label in progress
-      self.state = 'open'
+      set_issue_state('open')
       add_label('in-progress')
     when 'inactive'
-      # GH update: state open, - label in progress
-      self.state  = 'open'
+      set_issue_state('open')
       remove_label('in-progress')
     when 'priority'
-      self.state = 'open'
+      set_issue_state('open')
       add_label('priority')
     when 'normal_priority'
+      set_issue_state('open')
       remove_label('priority')
     else
       raise ArgumentError, "Unknown status '#{status}'!"
@@ -162,6 +160,12 @@ class Issue
   def assign_to(new_assignee)
     self.assignee = new_assignee
     github.issues.edit(ENV['DEFAULT_GITHUB_ORG'], repo_name, number, assignee: new_assignee)
+  end
+
+  def set_issue_state(new_state)
+    return if self.state == new_state
+    self.state = new_state
+    github.issues.edit(ENV['DEFAULT_GITHUB_ORG'], repo_name, number, state: new_state)
   end
 
   def broadcast_to_pusher
