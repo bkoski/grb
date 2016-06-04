@@ -45,6 +45,14 @@ class Issue
     closed_at || opened_at || updated_at
   end
 
+  def open?
+    state == 'open'
+  end
+
+  def milestone_active?
+    Milestone.where(title: milestone).first.try(:active?)
+  end
+
   def in_progress?
     labels.include?('in-progress')
   end
