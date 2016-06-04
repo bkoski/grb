@@ -76,7 +76,8 @@
     padding-right: 15px;
   }
 
-  label {
+  label, a {
+    color: #9e9e9e;
     font-size: 16px;
     padding: 5px 10px;
     border-radius: 8px;
@@ -88,9 +89,28 @@
     }
   }
 
-  label.active {
+  label.active, a.active {
     background-color: #CCC;
     color: black;
+  }
+}
+
+.view-select {
+  margin: 0 auto;
+  max-width: 800px;
+  a {
+    color: black;
+    font-size: 18px;
+    padding-right: 10px;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+
+  label.active, a.active {
+    font-weight: bold;
   }
 }
 

@@ -1,0 +1,4 @@
+<div class="item-select" style="max-width: 800px; margin: 0 auto;">
+  <a href="<%= show_milestone_view_path(@milestone.title, :todo) %>" class="<%= 'active' if params[:view] == 'todo' || params[:view].blank? %>">TODO</a>
+  <a href="<%= show_milestone_view_path(@milestone.title, :completed) %>" class="<%= 'active' if params[:view] == 'completed' %>">Completed</a>
+</div>

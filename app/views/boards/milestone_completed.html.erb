@@ -1,0 +1,56 @@
+<%= render partial: 'milestone_view_nav' %>
+
+
+<div id="issues-closed-grouping" class="grouping">
+  <h3>Closed Today</h3>
+  <div id="issues-closed-today" class="issues not-sortable"></div>
+</div>
+
+<% if @other_commits.present? %>
+  <div id="other-commits-grouping" class="grouping">
+    <h3>Other Commits</h3>
+    <div id="other-commits" class="commits">
+      <% @other_commits.each do |commit| %>
+        <div class="commit">
+          <div class="author"><div class="avatar contributor-<%= commit.author %>" style="display: inline-block; height: 15px; "></div><%= commit.author %></div>
+          <div class="title"><a href="<%= commit.url %>" target="_blank"><%= commit.message %></a></div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+<% end %>
+
+<div class="grouping">
+  <h3>In Progress</h3>
+  <div id="in-progress-issues" class="issues not-sortable"></div>
+</div>
+
+<script>
+ window.issuesCollection       = new IssuesCollection(<%= @issues.map(&:to_broadcast_h).to_json.html_safe %>);
+ issuesCollection.masterFilter = function(issue) { console.log(issue.state, issue.milestone); return issue.milestone == <%= params[:title].to_json.html_safe %>; }
+
+ issuesCollection.registerRenderer({
+  filter: function(issue) { return issue.state == 'closed'; },
+  target_el: '#issues-closed-today',
+  template_name: 'issue',
+  template_opts: {
+    showCommits: true
+  }
+ });
+
+ issuesCollection.registerRenderer({
+  filter: function(issue) { return issue.in_progress == true && issue.state == 'open' },
+  target_el: '#in-progress-issues',
+  template_name: 'issue',
+  template_opts: {
+    showCommits: true,
+    actions: ['pause','complete','avatar-reassign']
+  }
+ });
+
+ issuesCollection.triggerUpdate();
+
+</script>
+
+<%= render partial: 'components/reassign_modal' %>
+<%= render partial: 'components/add_issue_modal' %>

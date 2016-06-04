@@ -25,6 +25,8 @@ class BoardsController < ApplicationController
     @recently_closed_issues = @milestone.issues.closed_today.desc(:closed_at)
     @recent_commits   = @milestone.commits.today.desc(:committed_at)
     @other_commits    = @milestone.commits.not_associated_to_issue.today.all
+
+    render template: params[:view] == 'completed' ? 'boards/milestone_completed' : 'boards/milestone_todo'
   end
 
   def list_milestones

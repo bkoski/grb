@@ -9,7 +9,9 @@ Rails.application.routes.draw do
   put '/issues/:id'        => 'issues#update'
   post '/issues'           => 'issues#create'
   
-  get '/milestones/:title' => 'boards#milestone', as: 'show_milestone', title: /.+/
+  get '/milestones/:title'       => 'boards#milestone', as: 'show_milestone', title: /[^\/]+/
+  get '/milestones/:title/:view' => 'boards#milestone', as: 'show_milestone_view', title: /[^\/]+/
+
   get '/boards' => 'boards#show'
 
   get '/~:login' => 'boards#user', login: /.+/

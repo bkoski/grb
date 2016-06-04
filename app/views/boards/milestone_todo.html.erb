@@ -1,32 +1,4 @@
-<% if @recently_closed_issues.present? || @recent_commits.present? %>
-  <a class="completed-work-toggle" href="#">
-    <% if @recently_closed_issues.present? %>
-      <%= pluralize @recently_closed_issues.length, 'issue' %> closed today<%= ',' if @recent_commits.present? %>
-    <% end %>
-    <%= pluralize @recent_commits.length, 'commit' if @recent_commits.present? %> &raquo;
-  </a>
-<% end %>
-
-<div style="clear: both;"></div>
-
-<div id="issues-closed-grouping" class="grouping">
-  <h3>Closed Today</h3>
-  <div id="issues-closed-today" class="issues not-sortable"></div>
-</div>
-
-<% if @other_commits.present? %>
-  <div id="other-commits-grouping" class="grouping">
-    <h3>Other Commits</h3>
-    <div id="other-commits" class="commits">
-      <% @other_commits.each do |commit| %>
-        <div class="commit">
-          <div class="author"><div class="avatar contributor-<%= commit.author %>" style="display: inline-block; height: 15px; "></div><%= commit.author %></div>
-          <div class="title"><a href="<%= commit.url %>" target="_blank"><%= commit.message %></a></div>
-        </div>
-      <% end %>
-    </div>
-  </div>
-<% end %>
+<%= render partial: 'milestone_view_nav' %>
 
 <div class="grouping">
   <h3>In Progress</h3>
@@ -43,21 +15,11 @@
   <div id="todo-list" class="issues"></div>
 </div>
 
-
 <script>
  $('.container').addClass('hide-completed-work');
 
  window.issuesCollection       = new IssuesCollection(<%= @issues.map(&:to_broadcast_h).to_json.html_safe %>);
  issuesCollection.masterFilter = function(issue) { console.log(issue.state, issue.milestone); return issue.milestone == <%= params[:title].to_json.html_safe %>; }
-
- issuesCollection.registerRenderer({
-  filter: function(issue) { return issue.state == 'closed'; },
-  target_el: '#issues-closed-today',
-  template_name: 'issue',
-  template_opts: {
-    showCommits: true
-  }
- });
 
  issuesCollection.registerRenderer({
   filter: function(issue) { return issue.in_progress == true && issue.state == 'open' },

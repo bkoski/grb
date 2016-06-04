@@ -20,18 +20,6 @@ $(document).ready(function() {
     items: '.issue',
     update: function(e, ui) { updateItemSort(ui.item); }
   });
-
-  $('.completed-work-toggle').click(function(e) {
-    e.preventDefault();
-    $('.container').removeClass('hide-completed-work');
-    $(e.currentTarget).hide();
-  })
-
-  $(document).on('click', '.commits .show-more button', function(e) {
-    e.preventDefault();
-    $(e.currentTarget).closest('.commits').find('.commit').removeClass('hidden');
-    $(e.currentTarget).hide();
-  });
 });
 
 /******************************/
