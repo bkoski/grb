@@ -143,7 +143,6 @@ class Issue
   }
 
   def add_label(label_name)
-    github = Github.new oauth_token: Thread.current[:github_token]
     labels = github.issues.labels.add(ENV['DEFAULT_GITHUB_ORG'], repo_name, number, label_name)
 
     target_color = LABEL_COLORS[label_name]
@@ -155,7 +154,6 @@ class Issue
   end
 
   def remove_label(label_name)
-    github = Github.new oauth_token: Thread.current[:github_token]
     github.issues.labels.remove(ENV['DEFAULT_GITHUB_ORG'], repo_name, number, label_name: label_name)
 
     self.labels -= [label_name]
@@ -163,12 +161,16 @@ class Issue
 
   def assign_to(new_assignee)
     self.assignee = new_assignee
-    github = Github.new oauth_token: Thread.current[:github_token]
     github.issues.edit(ENV['DEFAULT_GITHUB_ORG'], repo_name, number, assignee: new_assignee)
   end
 
   def broadcast_to_pusher
     $pusher.trigger('grb', 'update', self.to_broadcast_h.to_json)
+  end
+
+  private
+  def github
+    @github ||=  Github.new oauth_token: Thread.current[:github_token]
   end
 
 end
