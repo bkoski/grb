@@ -36,8 +36,14 @@ class IssueComment
   end
 
   def check_for_referenced_commits
-    body.scan(/\b[0-9a-f]{40}\b/).each do |referenced_sha|
+    sha_regexp = /\b[0-9a-f]{40}\b/
+    
+    body.scan(sha_regexp).each do |referenced_sha|
       Commit.find_by(repo_name: repo_name, sha: referenced_sha).issues << issue
+    end
+
+    if body.match(sha_regexp) && issue && issue.milestone_active? && issue.open?
+      issue.add_label('in-progress')
     end
   end
 

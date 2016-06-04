@@ -60,9 +60,12 @@ class Commit
   def check_for_issue_associations
     self.issues = []
     message.scan(/#(\d+)[^\d]?/) do |issue_number_match|
-      self.issues << Issue.where(repo_name: repo_name, number: issue_number_match.first).first
+      referenced_issue = Issue.where(repo_name: repo_name, number: issue_number_match.first).first
+      next if referenced_issue.nil?
+
+      self.issues << referenced_issue
+      referenced_issue.add_label('in-progress') if referenced_issue.milestone_active? && referenced_issue.open?
     end
-    self.issues.compact!
   end
 
 end
