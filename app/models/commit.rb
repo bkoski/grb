@@ -59,7 +59,7 @@ class Commit
   private
   def check_for_issue_associations
     self.issues = []
-    message.scan(/\b#(\d+)\b/) do |issue_number_match|
+    message.scan(/#(\d+)[^\d]?/) do |issue_number_match|
       self.issues << Issue.where(repo_name: repo_name, number: issue_number_match.first).first
     end
     self.issues.compact!
