@@ -1,5 +1,3 @@
-Mongo::Logger.logger = Logger.new(STDOUT)
-
 class IssueComment
   include Mongoid::Document
 
