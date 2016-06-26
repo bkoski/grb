@@ -14,7 +14,7 @@
 
     <% @active_milestones.each do |milestone| %>
       <h5><%= link_to milestone, show_milestone_path(milestone) %></h5>
-      <div id="milestone-issues-<%= milestone %>" class="issues"></div>
+      <div id="milestone-issues-<%= slugify(milestone) %>" class="issues"></div>
     <% end %>
   </div>
 <% end %>
@@ -49,7 +49,7 @@
  <% @active_milestones.each do |milestone| %>
   issuesCollection.registerRenderer({
     filter: function(issue) { return issue.in_progress == false && issue.priority == false && issue.milestone == <%= milestone.to_json.html_safe %> },
-    target_el: '#milestone-issues-<%= milestone %>',
+    target_el: '#milestone-issues-<%= slugify(milestone) %>',
     template_name: 'issue',
     template_opts: {
       actions: ['start']
