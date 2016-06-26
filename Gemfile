@@ -17,4 +17,8 @@ gem 'aws-sdk', '>= 2'
 
 group :development, :test do
   gem 'byebug'
+  gem 'rspec-rails', '~> 3.0'
+  gem 'database_cleaner'
+  gem 'mocha'
+  gem 'webmock'
 end
