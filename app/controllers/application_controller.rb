@@ -9,7 +9,7 @@ class ApplicationController < ActionController::Base
 
   def require_login
     if session[:github_token].blank?
-      session[:next_url] = request.url
+      session[:next_url] = request.path
       redirect_to '/auth/github'
     else
       Thread.current[:github_token] = session[:github_token]
