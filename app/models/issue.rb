@@ -101,7 +101,8 @@ class Issue
       m.title  = issue_data.milestone.title
       m.number = issue_data.milestone.number
       m.description = issue_data.milestone.descripton
-      m.repos       |= [i.repo_name]
+      m.repos        |= [i.repo_name]
+      m.contributors |= [i.assignee] if i.assignee.present?
       m.save!
     end
 

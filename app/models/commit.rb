@@ -11,6 +11,7 @@ class Commit
   field :committed_at, type: DateTime
 
   scope :today, -> { gte(committed_at: 24.hours.ago) }
+  scope :this_week, -> { gte(committed_at: 1.week.ago) }
   scope :not_associated_to_issue, -> { where(:issue_ids.with_size => 0) }
 
   has_and_belongs_to_many :issues
@@ -65,6 +66,12 @@ class Commit
 
       self.issues << referenced_issue
       referenced_issue.add_label('in-progress') if referenced_issue.milestone_active? && referenced_issue.open?
+
+      if referenced_issue.milestone.present?
+        milestone = Milestone.find_by(name: referenced_issue.milestone)
+        milestone.contributors |= [self.author]
+        milestone.save!
+      end
     end
   end
 

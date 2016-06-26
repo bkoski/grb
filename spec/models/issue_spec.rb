@@ -71,6 +71,16 @@ RSpec.describe Issue, type: :model do
       })
     end
 
+    it "updates the Milestone's contributor list when there is an assignee" do
+      @issue_data.milestone = { title: 'Test Milestone' }
+      
+      milestone = Milestone.create!(title: 'Test Milestone')
+      Issue.ingest('test-repo', @issue_data)
+    
+      milestone.reload
+      milestone.contributors.should == ['test-user']
+    end
+
     describe "when an issue is being closed" do
       before do
         @issue_data.state = 'closed'

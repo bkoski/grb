@@ -2,15 +2,16 @@ class Milestone
   include Mongoid::Document
   include Mongoid::Timestamps
   include SortOrder
-  
+
+  ### TODO: allow reference to multiple gh milestones  
   field :github_id,   type: Integer
+
   field :title,       type: String
   field :number,      type: Integer
   field :state,       type: String
   field :description, type: String
   field :repos, type: Array, default: []
-
-  ### TODO: allow reference to multiple gh milestones
+  field :contributors, type: Array, default: []
 
   field :active, type: Boolean, default: false
 
@@ -39,10 +40,6 @@ class Milestone
 
   def issues
     Issue.where(milestone: self.title).all
-  end
-
-  def contributors
-    issues.map(&:assignee).uniq.compact.sort
   end
 
   #### TODO: rename method
