@@ -2,6 +2,60 @@ require 'rails_helper'
 
 RSpec.describe Issue, type: :model do
 
+  describe "#add_label" do
+
+    it "does not repeatedly call to add a label once it exists" do
+      Github::Client::Issues::Labels.any_instance.expects(:add).once
+      @issue = Issue.new(repo_name: 'test-repo')
+      @issue.add_label('test-label')
+      @issue.add_label('test-label')
+    end
+
+    it "updates the internal label state immediately" do
+      Github::Client::Issues::Labels.any_instance.stubs(:add)
+
+      @issue = Issue.new(repo_name: 'test-repo', labels: ['bug'])
+      @issue.add_label('test-label')
+
+      @issue.labels.should == ['bug','test-label']
+    end
+
+    it "defines the label color for the priority label, if it has not already been defined" do
+      Github::Client::Issues::Labels.any_instance.stubs(:add).returns(Hashie::Mash.new({ color: '#111' }))
+      Github::Client::Issues::Labels.any_instance.stubs(:update).with(anything, anything, 'priority', { name: 'priority', target_color: Issue::LABEL_COLORS['priority'] })
+
+      @issue = Issue.new(repo_name: 'test-repo', labels: ['bug'])
+      @issue.add_label('test-label')
+    end
+
+    it "skips the call to define label color if it is already set" do
+      Github::Client::Issues::Labels.any_instance.stubs(:add).returns(Hashie::Mash.new({ color: Issue::LABEL_COLORS['priority'] }))
+      Github::Client::Issues::Labels.any_instance.stubs(:update).never
+
+      @issue = Issue.new(repo_name: 'test-repo', labels: ['bug'])
+      @issue.add_label('test-label')
+    end
+
+  end
+
+  describe "#remove_label" do
+    it "does not repeatedly call to remove a label" do
+      Github::Client::Issues::Labels.any_instance.expects(:remove).once
+      @issue = Issue.new(repo_name: 'test-repo', labels: ['test-label'])
+      @issue.remove_label('test-label')
+      @issue.remove_label('test-label')
+    end
+
+    it "updates the internal label state immediately" do
+      Github::Client::Issues::Labels.any_instance.stubs(:remove)
+
+      @issue = Issue.new(repo_name: 'test-repo', labels: ['bug'])
+      @issue.remove_label('test-label')
+
+      @issue.labels.should == ['bug']
+    end
+  end
+
   describe "ingest" do
 
     before do
@@ -31,7 +85,7 @@ RSpec.describe Issue, type: :model do
         Issue.ingest('test-repo', @issue_data)
       end
     end
-    
+
   end
 
 end

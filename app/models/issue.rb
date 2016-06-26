@@ -152,6 +152,9 @@ class Issue
   }
 
   def add_label(label_name)
+    # Don't repeatedly call to add a label if it already exists
+    return if self.labels.include?(label_name)
+
     labels = github.issues.labels.add(ENV['DEFAULT_GITHUB_ORG'], repo_name, number, label_name)
 
     target_color = LABEL_COLORS[label_name]
@@ -163,6 +166,9 @@ class Issue
   end
 
   def remove_label(label_name)
+    # Don't make unnecessary remove calls
+    return unless self.labels.include?(label_name)
+
     github.issues.labels.remove(ENV['DEFAULT_GITHUB_ORG'], repo_name, number, label_name: label_name)
 
     self.labels -= [label_name]
