@@ -125,6 +125,12 @@ development:
 
     # Ensure all times are UTC in the app side. (default: false)
     # use_utc: false
+
+production:
+  clients:
+    default:
+      uri: <%= ENV['MONGO_URI'] %>
+
 test:
   clients:
     default:
