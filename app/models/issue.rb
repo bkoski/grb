@@ -112,6 +112,9 @@ class Issue
       Contributor.create!(login: i.assignee, avatar_url: issue_data.assignee.avatar_url)
     end
 
+    i.remove_label('in-progress') if !i.open? && i.labels.include?('in-progress')
+    i.remove_label('priority')    if !i.open? && i.labels.include?('priority')
+
     # repo.update_attributes!(last_activity_at: i.opened_at) if i.opened_at > repo.last_activity_at 
 
     i.save!
