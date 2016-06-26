@@ -1,6 +1,7 @@
 Rails.application.routes.draw do
 
   get '/auth/github/callback', to: 'sessions#create'
+  get '/logout',               to: 'sessions#logout'
 
   put '/milestones/sort'   => 'milestones#update_sort_order'
   put '/milestones/:title' => 'milestones#update', title: /.+/
