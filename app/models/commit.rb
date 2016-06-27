@@ -68,7 +68,7 @@ class Commit
       referenced_issue.add_label('in-progress') if referenced_issue.milestone_active? && referenced_issue.open?
 
       if referenced_issue.milestone.present?
-        milestone = Milestone.find_by(name: referenced_issue.milestone)
+        milestone = Milestone.find_by(title: referenced_issue.milestone)
         milestone.contributors |= [self.author]
         milestone.save!
       end
