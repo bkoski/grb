@@ -8,7 +8,8 @@ class SessionsController < ApplicationController
     session[:github_token]   = env['omniauth.auth'].credentials.token
 
     if session[:next_url].nil? || session[:next_url] == '/'
-      redirect_to "/~#{session[:github_login]}"
+      # redirect_to "/~#{session[:github_login]}"
+      redirect_to '/'
     else
       redirect_to session[:next_url]
     end
