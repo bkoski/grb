@@ -14,6 +14,7 @@ gem 'omniauth-github'
 gem 'hashie'
 
 gem 'aws-sdk', '>= 2'
+gem 'puma'
 
 group :development, :test do
   gem 'byebug'
