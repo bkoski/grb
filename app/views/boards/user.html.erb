@@ -25,7 +25,7 @@
 </div>
 
 <script>
- window.issuesCollection       = new IssuesCollection(<%= Issue.all.map(&:to_broadcast_h).to_json.html_safe %>);
+ window.issuesCollection       = new IssuesCollection(<%= @issues.map(&:to_broadcast_h).to_json.html_safe %>);
  issuesCollection.masterFilter = function(issue) { return issue.assignee == <%= params[:login].to_json.html_safe %>; }
 
  issuesCollection.registerRenderer({
@@ -48,7 +48,7 @@
 
  <% @active_milestones.each do |milestone| %>
   issuesCollection.registerRenderer({
-    filter: function(issue) { return issue.in_progress == false && issue.priority == false && issue.milestone == <%= milestone.to_json.html_safe %> },
+    filter: function(issue) { return issue.in_progress == false && issue.milestone == <%= milestone.to_json.html_safe %> },
     target_el: '#milestone-issues-<%= slugify(milestone) %>',
     template_name: 'issue',
     template_opts: {

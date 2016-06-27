@@ -7,6 +7,12 @@
         <div class="milestone" data-object-id="<%= milestone._id %>" data-entity-type="milestone">
           <div class="content">
             <div class="title"><%= link_to milestone.title, "/milestones/#{milestone.title}" %></div>
+            <div class="repo-list">
+              <% milestone.repos.each do |repo| %>
+                <a href=""><%= repo %></a>
+              <% end %>
+              <div style="clear: both;"></div>
+            </div>
           </div>
           <div class="actions">
             <span class="primary-actions">
@@ -31,6 +37,12 @@
         <div class="milestone" data-object-id="<%= milestone._id %>" data-entity-type="milestone">
           <div class="content">
             <div class="title"><%= link_to milestone.title, "/milestones/#{milestone.title}" %></div>
+            <div class="repo-list">
+              <% milestone.repos.each do |repo| %>
+                <div class="repo"><a href="https://github.com/<%= ENV['DEFAULT_GITHUB_ORG'] %>/<%= repo %>/milestones" target="_blank"><%= repo %></a></div>
+              <% end %>
+              <div style="clear: both;"></div>
+            </div>
           </div>
           <div class="actions">
             <span class="primary-actions">

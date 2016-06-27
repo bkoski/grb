@@ -3,22 +3,25 @@ class Milestone
   include Mongoid::Timestamps
   include SortOrder
 
-  ### TODO: allow reference to multiple gh milestones  
-  field :github_id,   type: Integer
-
   field :title,       type: String
-  field :number,      type: Integer
   field :state,       type: String
   field :description, type: String
-  field :repos, type: Array, default: []
-  field :contributors, type: Array, default: []
-
   field :active, type: Boolean, default: false
 
+  field :repos,       type: Array, default: []
+  field :contributors, type: Array, default: []
+
+  # THese attrs are stored as a repo_name => value hash
+  field :github_ids,  type: Hash, default: {}
+  field :numbers,     type: Hash, default: {}
+
+  scope :open, -> { where(state: 'open') }
   scope :active, -> { where(active: true) }
   scope :inactive, -> { where(active: false) }
 
   before_create :default_sort_order
+
+  index({ title: 1 }, unique: true)
 
   def set_status!(status)
     case status

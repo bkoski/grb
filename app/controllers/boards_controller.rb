@@ -12,7 +12,7 @@ class BoardsController < ApplicationController
   def user
     @contributor        = Contributor.find_by(login: params[:login])
     @title              = "@#{@contributor.login}'s Issues"
-    @issues = Issue.where(assignee: params[:login]).all
+    @issues = Issue.where(assignee: params[:login]).open.all
     @active_milestones = Milestone.active.map(&:title) & @issues.map(&:milestone)
     @backlog_issues = []
   end
@@ -31,7 +31,7 @@ class BoardsController < ApplicationController
 
   def list_milestones
     @title = "All Milestones"
-    @milestones = Milestone.all
+    @milestones = Milestone.open.all
   end
 
 end

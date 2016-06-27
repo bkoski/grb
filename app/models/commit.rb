@@ -44,7 +44,7 @@ class Commit
     commit
   end
 
-  def self.scrape_for_repo(repo_name: repo_name, branch: 'master', since: 24.years.ago)
+  def self.scrape_for_repo(repo_name: nil, branch: 'master', since: 24.years.ago)
     all_commits = Github.repos.commits.list ENV['DEFAULT_GITHUB_ORG'], repo_name, since: since, sha: branch
     all_commits.each { |c| import(repo_name: repo_name, branch: branch, commit_data: c) }
   end
@@ -68,7 +68,7 @@ class Commit
       referenced_issue.add_label('in-progress') if referenced_issue.milestone_active? && referenced_issue.open?
 
       if referenced_issue.milestone.present?
-        milestone = Milestone.find_by(name: referenced_issue.milestone)
+        milestone = Milestone.find_by(title: referenced_issue.milestone)
         milestone.contributors |= [self.author]
         milestone.save!
       end

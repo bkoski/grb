@@ -44,6 +44,11 @@ $(document).on('click', '.add-issue-trigger', function() {
   $('#add-issue-modal input[type="text"]').focus();
 });
 
+// Relay the milestone number through to the milestone_number hidden input
+$(document).on('click', '#add-issue-modal .item-select.repo-name label', function(e) {
+  $('#add-issue-modal input[name="milestone_number"').val($(e.currentTarget).data('milestone-number'));
+});
+
 // Save handler when clicking 'Add' button within modal.
 $(document).on('click', '#add-issue-modal .btn', function(e) {
   if($(e.currentTarget).hasClass('disabled')) {

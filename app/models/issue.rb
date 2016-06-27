@@ -96,13 +96,17 @@ class Issue
     i.milestone_github_id = issue_data.milestone.try(:id)
 
     if i.milestone.present? 
-      m = Milestone.find_or_initialize_by(github_id: i.milestone_github_id)
+      m = Milestone.find_or_initialize_by(title: i.milestone)
       m.state  = issue_data.milestone.state
       m.title  = issue_data.milestone.title
-      m.number = issue_data.milestone.number
       m.description = issue_data.milestone.descripton
+
+      m.numbers[i.repo_name]    = issue_data.milestone.number
+      m.github_ids[i.repo_name] = issue_data.milestone.id
+      
       m.repos        |= [i.repo_name]
       m.contributors |= [i.assignee] if i.assignee.present?
+      
       m.save!
     end
 
