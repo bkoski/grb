@@ -48,7 +48,7 @@
 
  <% @active_milestones.each do |milestone| %>
   issuesCollection.registerRenderer({
-    filter: function(issue) { return issue.in_progress == false && issue.priority == false && issue.milestone == <%= milestone.to_json.html_safe %> },
+    filter: function(issue) { return issue.in_progress == false && issue.milestone == <%= milestone.to_json.html_safe %> },
     target_el: '#milestone-issues-<%= slugify(milestone) %>',
     template_name: 'issue',
     template_opts: {
