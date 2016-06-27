@@ -20,6 +20,8 @@ class Milestone
 
   before_create :default_sort_order
 
+  index({ title: 1 }, unique: true)
+
   def set_status!(status)
     case status
     when 'active'
