@@ -31,7 +31,7 @@ class BoardsController < ApplicationController
 
   def list_milestones
     @title = "All Milestones"
-    @milestones = Milestone.all
+    @milestones = Milestone.open.all
   end
 
 end

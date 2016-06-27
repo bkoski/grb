@@ -15,6 +15,7 @@ class Milestone
 
   field :active, type: Boolean, default: false
 
+  scope :open, -> { where(state: 'open') }
   scope :active, -> { where(active: true) }
   scope :inactive, -> { where(active: false) }
 
