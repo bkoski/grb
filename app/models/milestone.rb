@@ -4,15 +4,16 @@ class Milestone
   include SortOrder
 
   field :title,       type: String
-  field :number,      type: Integer
   field :state,       type: String
   field :description, type: String
+  field :active, type: Boolean, default: false
 
-  field :github_ids,  type: Array, default: []
   field :repos,       type: Array, default: []
   field :contributors, type: Array, default: []
 
-  field :active, type: Boolean, default: false
+  # THese attrs are stored as a repo_name => value hash
+  field :github_ids,  type: Hash, default: {}
+  field :numbers,     type: Hash, default: {}
 
   scope :open, -> { where(state: 'open') }
   scope :active, -> { where(active: true) }

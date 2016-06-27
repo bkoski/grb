@@ -4,8 +4,7 @@
       <form>
         <div class="row">
           <h5 class="col s12">New Issue - <%= @milestone.title %></h5>
-          <input type="hidden" name="milestone_github_id" class="persistent-value" value="<%= @milestone.github_id %>" />
-          <input type="hidden" name="milestone_number" class="persistent-value" value="<%= @milestone.number %>" />
+          <input type="hidden" name="milestone_number" class="persistent-value" value="" />
         </div>
 
         <div class="row">
@@ -31,7 +30,7 @@
             <input name="repo_name" type="hidden" />
             <span class="title">Repo</span>
             <% @milestone.repos.each do |repo_name| %>
-              <label for="repo_name"><%= repo_name %></label>
+              <label for="repo_name" data-milestone-number="<%= @milestone.numbers[repo_name] %>"><%= repo_name %></label>
             <% end %>
           </div>
         </div>
