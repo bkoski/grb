@@ -236,12 +236,22 @@
       float: left;
     }
 
+    .repo-list {
+      float: left;
+      padding: 8px 0;
+      margin-left: 15px;
+
+      .repo {
+        padding-top: 0;
+      }
+    }
+
     .repo, .title {
       float: left;
       padding-top: 5px;
     }
 
-    .repo {
+    .repo, .repo a {
       font-weight: bold;
       margin-right: 15px;
       color: #AAA;
