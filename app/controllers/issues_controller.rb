@@ -38,7 +38,7 @@ class IssuesController < ApplicationController
 
     # Apply sort as requested
     if params[:sort] == 'top'
-      top_issue = Issue.where(milestone_github_id: params[:milestone_github_id]).open.asc(:sort_order).first
+      top_issue = Issue.where(repo_name: params[:repo_name]).open.asc(:sort_order).first
       new_issue.relative_sort('before', top_issue)
     end
 
