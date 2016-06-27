@@ -88,6 +88,10 @@
 }
 
 #add-issue-modal {
+  
+  /* overrides to ensure modal displays without scroll as often as possible */
+  top: 6% !important;
+  max-height: 90%;
 
   input[name=title] {
     font-size: 1.5rem;
