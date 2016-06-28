@@ -60,7 +60,7 @@ class Commit
   private
   def check_for_issue_associations
     self.issues = []
-    message.scan(/#(\d+)[^\d]?/) do |issue_number_match|
+    message.to_s.scan(/#(\d+)[^\d]?/) do |issue_number_match|
       referenced_issue = Issue.where(repo_name: repo_name, number: issue_number_match.first).first
       next if referenced_issue.nil?
 
