@@ -14,7 +14,7 @@ function IssuesCollection(issues) {
   this.updateCallbacks = [];
   this.masterFilter    = function() { return true; };
 
-  this.pusher = new Pusher('57023099609bcbe99e63', {
+  this.pusher = new Pusher(window.GRB_CONFIG.pusherKey, {
       encrypted: true
   });
   this.pusherChannel = this.pusher.subscribe('grb');
