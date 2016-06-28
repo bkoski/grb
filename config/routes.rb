@@ -15,6 +15,8 @@ Rails.application.routes.draw do
 
   get '/boards' => 'boards#show'
 
+  get '/~:login/history' => 'boards#user_history', login: /.+/
+  get '/~:login/log' => 'boards#user_commits', login: /.+/
   get '/~:login' => 'boards#user', login: /.+/
 
   get '/' => 'boards#list_milestones'

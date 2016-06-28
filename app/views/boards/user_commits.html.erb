@@ -1,0 +1,17 @@
+<div id="user-log" class="grouping">
+  <table class="completed-work" style="display: block;">
+
+    <% @commit_dates.each do |date| %>
+      <tr>
+        <td colspan="2"><h3><%= date.strftime("%B %d") %></h3></td>
+      </tr>
+      <% @commits_by_date[date].each do |commit| %>
+        <tr class="commit">
+          <td class="repo" style="padding-right: 20px; text-align: right;"><%= commit.repo_name.gsub(/-/, '&#8209;').html_safe %></td>
+          <td class="title"><a href="<%= commit.url %>" target="_blank"><%= commit.message %></a></td>
+        </tr>
+      <% end %>
+    <% end %>
+
+  </table>
+</div>

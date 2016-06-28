@@ -17,6 +17,21 @@ class BoardsController < ApplicationController
     @backlog_issues = []
   end
 
+  def user_commits
+    params[:days] ||= 7
+    @contributor     = Contributor.find_by(login: params[:login])
+    @title           = "@#{@contributor.login}'s Commits"
+    @commits_by_date = Commit.where(author: params[:login]).gte(committed_at: params[:days].to_i.days.ago).desc(:committed_at).all.group_by { |c| c.committed_at.to_date }
+    @commit_dates    = @commits_by_date.keys.sort.reverse
+  end
+
+  def user_history
+    params[:days] ||= 7
+    @contributor      = Contributor.find_by(login: params[:login])
+    @title            = "@#{@contributor.login}'s History"
+    @issues           = Issue.where(assignee: params[:login], state: 'closed').gte(closed_at: params[:days].to_i.days.ago).desc(:closed_at, :updated_at)
+  end
+
   def milestone
     @title            = params[:title]
     @milestone        = Milestone.find_by(title: params[:title])

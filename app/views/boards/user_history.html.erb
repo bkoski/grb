@@ -1,0 +1,26 @@
+<div class="grouping">
+  <h3>Issues Closed Last <%= params[:days] %> days</h3>
+  <div id="issues" class="issues"></div>
+</div>
+
+<script>
+ window.issuesCollection       = new IssuesCollection(<%= @issues.map(&:to_broadcast_h).to_json.html_safe %>);
+ issuesCollection.masterFilter = function(issue) { return issue.assignee == <%= params[:login].to_json.html_safe %> && issue.state == 'closed' ; }
+
+ issuesCollection.registerRenderer({
+  target_el: '#issues',
+  template_name: 'issue',
+  template_opts: {
+    showCommits: true
+  }
+ });
+
+ issuesCollection.triggerUpdate();
+</script>
+
+
+<style>
+<% Contributor.all.each do |c| %>
+  .avatar.contributor-<%= c.login %> { background-image: url(<%= c.avatar_url %>); }
+<% end %>
+</style>
