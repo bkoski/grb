@@ -1,0 +1,6 @@
+machine:
+  ruby:
+    version: 2.3.0
+dependencies:
+  pre:
+    - bundle install --local
