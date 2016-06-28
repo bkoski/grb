@@ -6,7 +6,7 @@ WebMock.disable_net_connect!
 RSpec.configure do |config|
 
   config.expect_with :rspec do |expectations|
-     expectations.syntax = :should
+     expectations.syntax = [:expect, :should]
   end
 
   config.mock_with :mocha

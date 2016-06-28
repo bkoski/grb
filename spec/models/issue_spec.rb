@@ -54,6 +54,13 @@ RSpec.describe Issue, type: :model do
 
       @issue.labels.should == ['bug']
     end
+
+    it "silently ignores issues where the label no longer exists on the issue" do
+      Github::Client::Issues::Labels.any_instance.stubs(:remove).raises(Github::Error::NotFound.new(response_headers: {}, body: nil, status: 404))
+
+      @issue = Issue.new(repo_name: 'test-repo', labels: ['test-label'])
+      expect { @issue.remove_label('test-label') }.to_not raise_error
+    end
   end
 
   describe "ingest" do

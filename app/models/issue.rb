@@ -174,7 +174,11 @@ class Issue
     # Don't make unnecessary remove calls
     return unless self.labels.include?(label_name)
 
-    github.issues.labels.remove(ENV['DEFAULT_GITHUB_ORG'], repo_name, number, label_name: label_name)
+    begin
+      github.issues.labels.remove(ENV['DEFAULT_GITHUB_ORG'], repo_name, number, label_name: label_name)
+    rescue Github::Error::NotFound
+      # Just ignore issues where we're trying to remove a label that doesn't exist in github for some reason.
+    end
 
     self.labels -= [label_name]
   end
