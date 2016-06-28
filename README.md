@@ -1,5 +1,7 @@
 # github rapid board
 
+[![CircleCI](https://circleci.com/gh/bkoski/grb.svg?style=svg)](https://circleci.com/gh/bkoski/grb)
+
 Easily track and manage issues that span multiple repos.
 
 Still under construction.
