@@ -32,6 +32,10 @@ class BoardsController < ApplicationController
     @issues           = Issue.where(assignee: params[:login], state: 'closed').gte(closed_at: params[:days].to_i.days.ago).desc(:closed_at, :updated_at)
   end
 
+  def redirect_to_user
+    redirect_to "/~#{session[:github_login]}"
+  end
+
   def milestone
     @title            = params[:title]
     @milestone        = Milestone.find_by(title: params[:title])
