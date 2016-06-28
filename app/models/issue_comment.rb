@@ -37,7 +37,7 @@ class IssueComment
     sha_regexp = /\b[0-9a-f]{40}\b/
     
     body.scan(sha_regexp).each do |referenced_sha|
-      Commit.find_by(repo_name: repo_name, sha: referenced_sha).issues << issue
+      Commit.find_or_create_by(repo_name: repo_name, sha: referenced_sha).issues << issue
     end
 
     if body.match(sha_regexp) && issue && issue.milestone_active? && issue.open?
