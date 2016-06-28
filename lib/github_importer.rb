@@ -1,108 +1,47 @@
 class GithubImporter
 
-  # Set this to true to import all repos rather than only those with activity
-  # in the past three days.
-  attr_accessor :import_everything
+  attr_accessor :backfill_for
 
-  # Define a specific list of repos to crawl.
-  attr_accessor :repos
+  def initialize
+    @backfill_for = 1.day
+  end
 
   def run!
-    # import_repos unless @repos.present?  # no need to fetch repos if we're being asked to import a specific one
-    # import_commits
-    import_issues
+    import_commits
   end
 
   private
 
-  def import_everything?
-    @import_everything
+  def github
+    Github.new(oauth_token: Thread.current[:github_token])
   end
 
-  def repos_to_crawl
-    return @repos_to_crawl if @repos_to_crawl.present?
-
-    if @repos.present?
-      @repos_to_crawl = @repos
-    elsif import_everything?
-      @repos_to_crawl = Repo.asc(:name).all 
-    else
-      @repos_to_crawl = Repo.gte(last_activity_at: 3.days.ago).asc(:name)
-    end
+  def all_repos
+    repos = github.repos.list org: ENV['DEFAULT_GITHUB_ORG'], auto_pagination: true
+    repos.select { |r| DateTime.parse(r.pushed_at) >= backfill_for.ago }
   end
 
-  def import_repos
-    last_scrape_time = ScrapeLog.last_scrape_time(:repo_list)
-    return if !import_everything? && last_scrape_time.present? && last_scrape_time >= 15.minutes.ago
-
-    puts "Importing repo list..."
-
-    all_repos = Github.repos.list org: ENV['DEFAULT_GITHUB_ORG'], auto_pagination: true
-    all_repos.each do |repo_data|
-      local_repo = Repo.find_or_create_by(name: repo_data.name)
-
-      last_pushed_at = DateTime.parse(repo_data.pushed_at) 
-      local_repo.last_activity_at = last_pushed_at if local_repo.last_activity_at.nil? || last_pushed_at > local_repo.last_activity_at
-      local_repo.default_branch   = repo_data.default_branch
-      local_repo.url              = repo_data.html_url
-
-      if import_everything? || local_repo.last_activity_at >= 24.hours.ago
-        puts "\timporting branches for #{repo_data.name}..."
-        active_branches = Github.repos.branches(ENV['DEFAULT_GITHUB_ORG'], repo_data.name).map(&:name)
-        local_repo.active_branches = active_branches.select do |branch_name|
-          branch_meta = Github.repos.branch(ENV['DEFAULT_GITHUB_ORG'], repo_data.name, branch_name)
-          last_touched = Date.parse(branch_meta.commit.commit.author.date)
-          import_everything? || last_touched >= 1.week.ago
-        end
-      else
-        local_repo.active_branches = []
-      end
-
-      local_repo.save!
+  def active_branches(repo)
+    branches = github.repos.branches(ENV['DEFAULT_GITHUB_ORG'], repo.name).map(&:name)
+    branches.select do |branch_name|
+      branch_meta  = github.repos.branch(ENV['DEFAULT_GITHUB_ORG'], repo.name, branch_name)
+      last_touched = Date.parse(branch_meta.commit.commit.author.date)
+      last_touched >= backfill_for.ago
     end
-
-    ScrapeLog.record!(:repo_list)
   end
 
   def import_commits
-    repos_to_crawl.each do |repo|
+    all_repos.each do |repo|
       puts "Importing commits for #{repo.name}:"
 
-      repo.active_branches.each do |branch_name|
+      active_branches(repo).each do |branch_name|
         puts "\ton #{branch_name} branch..."
-        all_commits = Github.repos.commits.list ENV['DEFAULT_GITHUB_ORG'], repo.name, since: 24.hours.ago, sha: branch_name
+        all_commits = github.repos.commits.list ENV['DEFAULT_GITHUB_ORG'], repo.name, since: backfill_for.ago, sha: branch_name
 
         all_commits.each do |commit_data|
-          c = repo.commits.find_or_create_by(sha: commit_data.sha)
-
-          c.author_name  = commit_data.author ? commit_data.author.login : commit_data.commit.author.email
-          c.url          = commit_data.html_url
-          c.message      = commit_data.commit.message
-          c.branch       = branch_name
-          c.committed_at = DateTime.parse(commit_data.commit.author.date)
-          c.save!
-
-          repo.last_activity_at = c.committed_at if c.committed_at > repo.last_activity_at
-          repo.save! 
+          Commit.import(repo_name: repo.name, branch: branch_name, commit_data: commit_data)
         end
       end
-    end
-  end
-
-  def import_issues
-    [OpenStruct.new(name: ENV['DEFAULT_GITHUB_REPO'])].each do |repo|
-      puts "Importing issues for #{repo.name}..."
-
-      list_query = {
-        user: ENV['DEFAULT_GITHUB_ORG'],
-        repo: repo.name,
-        state: 'all',
-        auto_pagination: true
-      }
-      list_query[:since] = 3.hours.ago.utc.iso8601 unless import_everything?
-
-      issues = Github.issues.list(list_query).to_a
-      issues.each { |issue_data| Issue.ingest(repo.name, issue_data) }
     end
   end
 

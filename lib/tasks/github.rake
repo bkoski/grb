@@ -9,6 +9,13 @@ namespace :github do
   task :backfill_issues => [:environment, :set_service_token] do 
     IssueScrape.run(backfill_for: ENV['DAYS_TO_BACKFILL'].to_i.days)
   end
+  
+  desc "pass DAYS_TO_BACKFILL to retroactively re-import commits"
+  task :backfill_commits => [:environment, :set_service_token] do
+    importer = GithubImporter.new
+    importer.backfill_for = ENV['DAYS_TO_BACKFILL'].to_i.days
+    importer.run!
+  end
 
   desc "Start an IssueScrape loop to capture milestone changes"
   task :scrape_issues => [:environment, :set_service_token] do
