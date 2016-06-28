@@ -9,7 +9,7 @@
             <div class="title"><%= link_to milestone.title, "/milestones/#{milestone.title}" %></div>
             <div class="repo-list">
               <% milestone.repos.each do |repo| %>
-                <a href=""><%= repo %></a>
+                <div class="repo"><a href="https://github.com/<%= ENV['DEFAULT_GITHUB_ORG'] %>/<%= repo %>/milestones" target="_blank"><%= repo %></a></div>
               <% end %>
               <div style="clear: both;"></div>
             </div>
