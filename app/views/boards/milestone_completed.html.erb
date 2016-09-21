@@ -25,6 +25,11 @@
   <div id="in-progress-issues" class="issues not-sortable"></div>
 </div>
 
+<div class="grouping">
+  <h3>For Review</h3>
+  <div id="issues-for-review" class="issues not-sortable"></div>
+</div>
+
 <script>
  window.issuesCollection       = new IssuesCollection(<%= @issues.map(&:to_broadcast_h).to_json.html_safe %>);
  issuesCollection.masterFilter = function(issue) { console.log(issue.state, issue.milestone); return issue.milestone == <%= params[:title].to_json.html_safe %>; }
@@ -45,6 +50,16 @@
   template_opts: {
     showCommits: true,
     actions: ['pause','complete','avatar-reassign']
+  }
+ });
+
+ issuesCollection.registerRenderer({
+  filter: function(issue) { return issue.for_review == true },
+  target_el: '#issues-for-review',
+  template_name: 'issue',
+  template_opts: {
+    showCommits: true
+    // actions: ['pause','complete','avatar-reassign']
   }
  });
 

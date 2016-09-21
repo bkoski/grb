@@ -61,6 +61,10 @@ class Issue
     labels.include?('priority')
   end
 
+  def needs_review?
+    labels.include?('for-review')
+  end
+
   def to_broadcast_h
     {
       _id: _id.to_s,
@@ -72,6 +76,7 @@ class Issue
       milestone: milestone,
       in_progress: in_progress?,
       priority: priority?,
+      for_review: needs_review?,
       url: url,
       sort_order: sort_order,
       commits: commits.map(&:to_broadcast_h)
@@ -117,8 +122,15 @@ class Issue
       Contributor.create!(login: i.assignee, avatar_url: issue_data.assignee.avatar_url)
     end
 
+    ### Label automations ###
+
+    # remove in-progress and priority labels when an issue is closed
     i.remove_label('in-progress') if !i.open? && i.labels.include?('in-progress')
     i.remove_label('priority')    if !i.open? && i.labels.include?('priority')
+
+    # toggle the for-review label on when issues are closed, remove it if they are re-opened
+    i.remove_label('for-review') if i.open?  && i.state_changed?
+    i.add_label('for-review')    if !i.open? && i.state_changed?
 
     # repo.update_attributes!(last_activity_at: i.opened_at) if i.opened_at > repo.last_activity_at 
 
@@ -151,6 +163,7 @@ class Issue
   end
 
   LABEL_COLORS = {
+    'for-review' => '5319e7',
     'in-progress' => '009933',
     'priority' => 'cc0000',
     'test1' => 'ffff00'
