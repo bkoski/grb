@@ -124,13 +124,16 @@ class Issue
 
     ### Label automations ###
 
-    # remove in-progress and priority labels when an issue is closed
-    i.remove_label('in-progress') if !i.open? && i.labels.include?('in-progress')
-    i.remove_label('priority')    if !i.open? && i.labels.include?('priority')
+    # Only apply automations to milestones we're actively tracking in grb.
+    if i.milestone_active?
+      # remove in-progress and priority labels when an issue is closed
+      i.remove_label('in-progress') if !i.open? && i.labels.include?('in-progress')
+      i.remove_label('priority')    if !i.open? && i.labels.include?('priority')
 
-    # toggle the for-review label on when issues are closed, remove it if they are re-opened
-    i.remove_label('for-review') if i.open?  && i.state_changed?
-    i.add_label('for-review')    if !i.open? && i.state_changed?
+      # toggle the for-review label on when issues are closed, remove it if they are re-opened
+      i.remove_label('for-review') if i.open?  && i.state_changed?
+      i.add_label('for-review')    if !i.open? && i.state_changed?
+    end
 
     # repo.update_attributes!(last_activity_at: i.opened_at) if i.opened_at > repo.last_activity_at 
 

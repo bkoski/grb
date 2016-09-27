@@ -94,11 +94,22 @@ RSpec.describe Issue, type: :model do
         @issue_data.closed_at = DateTime.now.iso8601
       end
 
-      it "strips in-progress and priority tags" do
+      it "strips in-progress and priority tags and adds for-review when the milestone is active" do
+        @issue_data.milestone = { title: 'Test Milestone' }
+        milestone = Milestone.create!(title: 'Test Milestone', active: true)
+
         @issue_data.labels = [ { name: 'in-progress' }, { name: 'priority' }, { name: 'bug' } ]
         Issue.any_instance.expects(:remove_label).with('in-progress')
         Issue.any_instance.expects(:remove_label).with('priority')
+        Issue.any_instance.expects(:add_label).with('for-review')
         Issue.any_instance.expects(:remove_label).with('bug').never
+        Issue.ingest('test-repo', @issue_data)
+      end
+
+      it "does not modify tags if the milestone is not active in grb" do
+        @issue_data.milestone = { title: 'Test Milestone' }
+        milestone = Milestone.create!(title: 'Test Milestone', active: false)
+        Issue.any_instance.expects(:add_label).with('for-review').never
         Issue.ingest('test-repo', @issue_data)
       end
     end
